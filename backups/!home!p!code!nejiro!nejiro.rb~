@@ -1,0 +1,79 @@
+# coding: utf-8
+# 根城 
+# Nejiro
+# A database application for bibliocreatio.pl
+#
+
+require 'rubygems'
+require 'bundler/setup'
+
+require 'sinatra'
+require 'sinatra/reloader' if development?
+
+# Datamapper modules
+require 'dm-core'
+require 'dm-migrations'
+require 'dm-validations'
+require 'dm-constraints'
+require 'dm-serializer' # for json output
+require 'dm-timestamps'
+require 'dm-aggregates'
+require 'dm-sqlite-adapter'
+require 'dm-pager'
+
+# Template rendering (BOTH need to be req'd explicitly)
+require 'haml'
+require 'sass'                          
+
+# Data formats
+require 'json'
+require 'maruku'
+
+# Hash function
+require 'digest'
+
+# Sintara, datamapper, logging configuration
+require './config/nejiro_config.rb'
+
+# Models 
+load 'models/init.rb'
+
+# Helpers  
+load 'helpers/init.rb'
+
+# Routes
+load 'routes/init.rb'
+
+
+# Filters
+
+before do 
+  # Set utf-8 for all outgoing responses
+  # headers "Content-Type" => "text/html; charset=utf-8"
+    time = Time.now
+    req = request.url
+    request.body.rewind  # in case someone already read it
+    data = request.body.read
+    $log << "=========\n"
+    $log << (time.to_s + "\n")
+    $log << "from ip: " + request.ip + "\n"
+    $log << (req + "\n" )
+    $log << data#.to_json
+    $log << "\n\n\n"
+
+    # Allow access from pr.bibliocreatio.pl
+    # to the space "/api", without a password
+    unless development? || test? || request.fullpath =~ /^\/prezenty/ || request.fullpath =~ /^\/images/ || 
+		request.fullpath =~/^\/favicon/ ||
+		( (request.url == "http://pr.bibliocreatio.pl/" || request.url == 'http://pr.bibliocreatio.pl'))
+      protected!
+    end
+
+end 
+
+
+after do
+    $log.flush 
+end
+
+

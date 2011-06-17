@@ -1,0 +1,68 @@
+<! DOCTYPE html>
+<html>
+
+<head>
+<title>Humane Software - Contact</title>
+
+<link rel="stylesheet" href="/styles/reset.css" type="text/css">
+<link rel="stylesheet" href="/styles/text.css" type="text/css">
+<link rel="stylesheet" href="/styles/960.css" type="text/css">
+<link rel="stylesheet" href="/styles/hms.css" type="text/css">
+</head>
+
+
+<body>    
+  <div id="header_container" class="">
+    <div class="container_16">
+      
+      <div id="nav" class="grid_5 prefix_11 alpha omega">
+        <ul>
+	        <li> <a href="/">home</a>	</li>
+ 	        <li> <a href="/team">team</a> </li>
+          <li> <a href="/blog">blog</a> </li>
+	        <li><a class="active" href="/contact">contact</a> </li>
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="container" class="container_16">
+    
+    
+    <div class="grid_16 alpha omega">
+      <h1 id="contact">Contact</h1>
+      
+      
+      
+      <h6>
+	      <a class="eml" href="mailto:irek@humane-software.com">
+	        irek@humane-software.com
+	      </a>
+      </h6>
+      
+      
+      <h6>
+	      <a class="eml" href="mailto:marika@humane-software.com">
+	        marika@humane-software.com
+	      </a>
+      </h6>
+      
+      
+      
+      
+      
+      
+      <div class="grid_16 alpha omega">
+	      <hr id="headspace">
+      </div>
+      <div class="clearfix"></div>
+    
+    </div>
+
+
+  </div>
+<script src="/analytics.js" language="javascript" type="text/javascript"></script>
+</body>
+
+</html>

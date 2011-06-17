@@ -1,0 +1,51 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Thu Jun 16 21:18:56 2011
+;; Desktop file format version 206
+;; Emacs version 23.2.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("PUT"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("/home/p/code/nejiro/spec/event_spec.rb" "/home/p/.emacs" "/home/p/code/nejiro/spec/basket_spec.rb" "/home/p/code/nejiro/models/basket.rb" "/home/p/code/nejiro/routes/basket.rb" "/home/p/code/nejiro/routes/event.rb" "/home/p/code/nejiro/constant_server.sh" "/home/p/code/nejiro/routes/bookset.rb" "/home/p/code/nejiro/nejiro.rb"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/p/code/nejiro/spec/event_spec.rb"
+  "event_spec.rb"
+  'ruby-mode
+  nil
+  1457
+  '(nil nil)
+  nil
+  nil
+  '((indent-tabs-mode) (buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/p/code/nejiro/routes/event.rb"
+  "event.rb"
+  'ruby-mode
+  nil
+  480
+  '(194 nil)
+  nil
+  nil
+  '((indent-tabs-mode) (buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/p/.emacs"
+  ".emacs"
+  'emacs-lisp-mode
+  nil
+  575
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+

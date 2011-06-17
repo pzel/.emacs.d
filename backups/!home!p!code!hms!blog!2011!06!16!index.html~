@@ -1,0 +1,100 @@
+<!DOCTYPE html > 
+<head>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+  <title>Testing Date-Related Code With Library Interposing</title>
+  <link rel="stylesheet" href="/styles/reset.css" type="text/css">
+  <link rel="stylesheet" href="/styles/text.css" type="text/css">
+  <link rel="stylesheet" href="/styles/960.css" type="text/css">
+  <link rel="stylesheet" href="/styles/hms.css" type="text/css">
+</head>
+
+<body>
+
+<div class="container_16">
+<div class="grid_12 prefix_2 suffix_2">
+
+<h1>Testing Date-Related Code With Library Interposing</h1>
+<h4>by Irek Jozwiak</h4>
+
+<p>Every now and then I need to acceptance-test some date-related code. Consider a following scenario to test a default issue date of an invoice:</p>
+
+<pre>
+Given today is 15 July 2009
+When I issue an invoice with no date specified
+Then issue date is 15 July 2009
+</pre>
+
+<p>How to implement the <i>Given today is 15 July 2009</i> bit?</p>
+<p>What I have seen so far in Java world was a specialised ,,GiveMeDate'' class, with two implementations: one real (being a wrapper around the standard time classes), and one just for the test time (returning a date specified in a test). An appropriate implementation would be injected an IOC container. While one may argue that in object-oriented programming it is a good practice anyway, to introduce a freedom of choice of an implementation, in Haskell it doesn't feel very right (at least for my taste). Is there an alternative?</p>
+
+<p>Today I decided to try out a technique called library interposing. It allows me to intercept an <a href="http://www.haskell.org/haskellwiki/FFI_Introduction">FFI</a> call and return whatever date I want.</p>
+
+<p>I wrote a little library gtod_interposer.c that defines <a href="http://developer.apple.com/Mac/library/documentation/Darwin/Reference/ManPages/man2/gettimeofday.2.html">gettimeofday(2)</a> and made any application use it with the dynamic loader. Here is how exactly:</p>
+
+<pre>
+
+$ cat gtod_interposer.c
+
+#include &lt;dlfcn.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
+
+#include &lt;stdlib.h&gt;
+#include &lt;sys/time.h&gt;
+
+bool is_set(char *str)
+{
+  return (str != NULL) && (str[0] != 0);
+}
+
+int parse_date(char *date, struct timeval *tp) {
+  struct tm tm;
+  if (strptime(date, "%Y-%m-%d %H:%M:%S", &tm) != NULL)
+  {
+    (*tp).tv_sec = mktime(&tm);
+    (*tp).tv_usec = 0;
+    return 0;
+  }
+  else
+  {
+    return EFAULT; // well, not exactly it
+                   // but at least this is an expected value
+  }
+}
+
+int gettimeofday(struct timeval *tp, void *tzp)
+{
+  char *env_test_date = getenv("TEST_DATE");
+  
+  if (is_set(env_test_date)) 
+    return parse_date(env_test_date, tp);
+  else
+    return ((int (*)()) dlsym(RTLD_NEXT, "gettimeofday"))(tp,tzp);
+}
+
+$ cc -o gtod_interposer.dylib -G -Kpic -dynamiclib gtod_interposer.c
+$ export DYLD_INSERT_LIBRARIES="/Users/irek/Projects/firmus/gtod_interposer.dylib"
+
+$ ghc -e "System.Time.getClockTime"     # actual date
+Sun Jan 10 23:16:40 CET 2010
+$ export TEST_DATE="1982-07-15 12:00:00"
+$ ghc -e "System.Time.getClockTime"     # now the date is set by me
+Thu Jul 15 12:00:00 CEST 1982
+$ export TEST_DATE=""                   # unset TEST_DATE would do as well
+$ ghc -e "System.Time.getClockTime"     # back to the actual date
+Sun Jan 10 23:17:23 CET 2010
+
+</pre>
+
+<p><i>Note: this works for Mac OS X. For Linux it would be very similar, check the link below.</i></p>
+
+<p>The code has been very much inspired by <a href="file:///Users/irek/Documents/irekjozwiak.com/Testing_Date_With_Library_Interposing.html">Debugging and Performance Tuning with Library Interposers</a>.</p>
+
+
+<b>Edit 15 Jun 2011:</b> moved to new location.<br>
+
+
+</div>
+</div>
+</body>
+</html>

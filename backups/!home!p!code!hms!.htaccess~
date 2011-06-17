@@ -1,0 +1,4 @@
+<Files _FOSSIL_>
+  order allow,deny
+  deny from all
+</Files>
