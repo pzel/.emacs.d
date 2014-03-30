@@ -16,8 +16,8 @@
 
 ;; ----- ido-work-directory-list -----
 (
- "/home/p/"
  "/home/p/code/nejiro/spec/"
+ "/home/p/"
  "/home/p/code/nejiro/models/"
  "/home/p/code/nejiro/routes/"
  "/home/p/code/nejiro/"
@@ -40,6 +40,7 @@
 
 ;; ----- ido-work-file-list -----
 (
+ "event_spec.rb"
  ".emacs"
  "basket_spec.rb"
  "basket.rb"
@@ -49,18 +50,17 @@
  "nejiro.rb"
  "take.hs"
  "index.html"
- "hms.css"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/p/" (19962 20989) ".vim/" ".emacs.d/" ".gfceugfceu_options.dat" ".gnome2_private/" ".dosbox/" ".profile" ".bash_history" ".shotwell/" ".wine/" ".bashrc" ".tsclient/" "Templates/" ".dbus/" ".nautilus/" ".kkcrc" "Music/" ".irssi/" "Marika i Przemek 13.06-17.06.11.pdf" ".local/" ".dmrc" ".libreoffice/" ".recently-used.xbel.F19PRV" ".selfcontrol" ".recently-used.xbel.6AZARV" "Desktop/" "Games/" ".torus-trooper/" ".x11vnc.log.maple:7511" "#%2Ascratch%2A#9338EMh#" ".Xresources" ".wvdial.conf" ".mplayer/" "Downloads/" ".recently-used.xbel.TOGFQV" ".lesshst" ".notify-osd" ".htoprc" ".cabal/" ".xsession-errors.old" "Videos/" "_backups/" ".selected_editor" ".wicd/" ".dropbox/" ".gfceu/" ".mozilla/" ".cache/" ".gtkrc-2.0" "Documents/" ".face" ".recently-used.xbel.8XYLRV" ".moc/" ".gftp/" "Praca/" ".xinput.d/" ".sqlite_history" ".dmenu_cache" ".mission-control/" ".gstreamer-0.10/" ".qGorc" ".spout.sco" ".PlayOnLinux/" ".torus-trooper-pure/" ".gemrc" ".Xmodmap" ".gimp-2.6/" ".viminfo" ".themes/" ".emacs-places" ".vimrc" ".vifm/" ".visualvm/" "dn/" ".gnome2/" ".x11vnc.log.maple:7911" "temp/" ".Private/" ".gem/" ".notifyosdconf/" ".thumbnails/" ".java/" ".gconf/" ".compiz-1/" ".dropbox-dist/" ".jackdrc" ".byobu/" ".crawl/" ".notifier.conf" ".icons/" "Shared Files/" ".irb-history" ".luarocks/" ".sudo_as_admin_successful" ".fonts/" ".BOINC Manager" "Pictures/" ".xsession" ".xsession-errors" ".recently-used.xbel.DRH8PV" ".gvfs/" ".pyching/" ".xscreensaver" ".compiz/" ".recently-used.xbel.687RQV" ".chmsee/" ".gconfd/" ".recently-used.xbel.LM0TQV" ".pulse-cookie" "Notes/" ".recently-used.xbel.H6WBRV" ".heroku/" ".mc/" ".qt/" ".gnubiffrc" ".nlkt/" ".pki/" ".pulse/" ".ido.last" ".fossil" ".adobe/" "Torrents/" ".qemu-launcher/" ".gegl-0.0/" ".gnupg/" ".fceux/" "Mail/" ".screenrc" ".lftp/" ".gitconfig" ".assistant/" ".fontconfig/" ".esd_auth" ".gksu.lock" ".emacs" ".recently-used.xbel.K0UCRV" "Public/" ".rvm/" ".anthy/" ".ecryptfs/" ".filesearch.cfg" ".bash_logout" ".macromedia/" ".ghc/" ".processing/" "dx/" ".ssh/" "code/" ".ICEauthority" ".Skype/" ".links2/" ".recently-used.xbel.BS1BQV" ".config/" ".gtk-bookmarks" ".fceultra/" ".mtpaint" ".cheat/" ".lingot/" "../" "./")
+ ("/home/p/code/nejiro/spec/" (19962 22111) "review_spec.rb" "tag_spec.rb" "book_spec.rb" "basket_spec.rb" "user_spec.rb" ".spec.opts" "client_spec.rb" "booksetentry_spec.rb" "nejiro_spec.rb" "event_spec.rb" "./" "../" "bookset_spec.rb" "integration_spec.rb" "base.rb")
 
- ("/home/p/code/nejiro/spec/" (19948 2561) "review_spec.rb" "tag_spec.rb" "book_spec.rb" "basket_spec.rb" "user_spec.rb" ".spec.opts" "client_spec.rb" "booksetentry_spec.rb" "nejiro_spec.rb" "event_spec.rb" "./" "../" "bookset_spec.rb" "integration_spec.rb" "base.rb")
+ ("/home/p/code/nejiro/routes/" (19962 22124) "user.rb" "ajax.rb" "book.rb" "event.rb" "main.rb" "basket.rb" "review.rb" "tag.rb" "#event.rb#" "./" "../" "client.rb" "booksetentry.rb" "init.rb" "prezenty.rb" "bookset.rb")
+
+ ("/home/p/" (19962 22232) ".vim/" ".emacs.d/" ".gfceugfceu_options.dat" ".gnome2_private/" ".dosbox/" ".profile" ".bash_history" ".shotwell/" ".wine/" ".bashrc" ".tsclient/" "Templates/" ".dbus/" ".nautilus/" ".kkcrc" "#%2Ascratch%2A#10349zZl#" "Music/" ".irssi/" "Marika i Przemek 13.06-17.06.11.pdf" ".local/" ".dmrc" ".libreoffice/" ".recently-used.xbel.F19PRV" ".selfcontrol" ".recently-used.xbel.6AZARV" "Desktop/" "Games/" ".torus-trooper/" ".x11vnc.log.maple:7511" "#%2Ascratch%2A#9338EMh#" ".Xresources" ".wvdial.conf" ".mplayer/" "Downloads/" ".recently-used.xbel.TOGFQV" ".lesshst" ".notify-osd" ".htoprc" ".cabal/" ".xsession-errors.old" "Videos/" "_backups/" ".selected_editor" ".wicd/" ".dropbox/" ".gfceu/" ".mozilla/" ".cache/" ".gtkrc-2.0" "Documents/" ".face" ".recently-used.xbel.8XYLRV" ".moc/" ".gftp/" "Praca/" ".xinput.d/" ".sqlite_history" ".dmenu_cache" ".mission-control/" ".gstreamer-0.10/" ".qGorc" ".spout.sco" ".PlayOnLinux/" ".torus-trooper-pure/" ".gemrc" ".Xmodmap" ".gimp-2.6/" ".viminfo" ".themes/" ".emacs-places" ".vimrc" ".vifm/" ".visualvm/" "dn/" ".gnome2/" ".x11vnc.log.maple:7911" "temp/" ".Private/" ".gem/" ".notifyosdconf/" ".thumbnails/" ".java/" ".gconf/" ".compiz-1/" ".dropbox-dist/" ".jackdrc" ".byobu/" ".crawl/" ".notifier.conf" ".icons/" "Shared Files/" ".irb-history" ".luarocks/" ".sudo_as_admin_successful" ".fonts/" ".BOINC Manager" "Pictures/" ".xsession" ".xsession-errors" ".recently-used.xbel.DRH8PV" ".gvfs/" ".pyching/" ".xscreensaver" ".compiz/" ".recently-used.xbel.687RQV" ".chmsee/" ".gconfd/" ".recently-used.xbel.LM0TQV" ".pulse-cookie" "Notes/" ".recently-used.xbel.H6WBRV" ".heroku/" ".mc/" ".qt/" ".gnubiffrc" ".nlkt/" ".pki/" ".pulse/" ".ido.last" ".fossil" ".adobe/" "Torrents/" ".qemu-launcher/" ".gegl-0.0/" ".gnupg/" ".fceux/" "Mail/" ".screenrc" ".lftp/" ".gitconfig" ".assistant/" ".fontconfig/" ".esd_auth" ".gksu.lock" ".emacs" ".recently-used.xbel.K0UCRV" "Public/" ".rvm/" ".anthy/" ".ecryptfs/" ".filesearch.cfg" ".bash_logout" ".macromedia/" ".ghc/" ".processing/" "dx/" ".ssh/" "code/" ".ICEauthority" ".Skype/" ".links2/" ".recently-used.xbel.BS1BQV" ".config/" ".gtk-bookmarks" ".fceultra/" ".mtpaint" ".cheat/" ".lingot/" "../" "./")
 
  ("/home/p/code/nejiro/models/" (19950 40995) "user.rb" "book.rb" "event.rb" "basket.rb" "review.rb" "tag.rb" "./" "../" "client.rb" "booksetentry.rb" "init.rb" "bookset.rb")
-
- ("/home/p/code/nejiro/routes/" (19962 17610) "user.rb" "ajax.rb" "book.rb" "event.rb" "main.rb" "basket.rb" "review.rb" ".#event.rb" "tag.rb" "#event.rb#" "./" "../" "client.rb" "booksetentry.rb" "init.rb" "prezenty.rb" "bookset.rb")
 
  ("/home/p/code/nejiro/views/" (19952 62420) "basket/" "search_box_clear.haml" "book/" "search_box.haml" "bookset/" "layout.haml" "flash_box.haml" "debug.haml" "nejiro.scss" "client/" "helpertest.haml" "booklist_layout.haml" "tag/" "./" "header.haml" "nav_box.haml" "help.haml" "../" "index.haml" "prezenty/" "event/" "review/")
 
