@@ -142,10 +142,11 @@
 (setq-default uniquify-buffer-name-style 'forward)
 (put 'dired-find-alternate-file 'disabled nil)
 
+
 ;; BACKUP/AUTOSAVE
 (setq-default make-backup-files nil)
+(setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
-
 
 ;; share clipboard with X
 ;;(setq-default x-select-enable-primary t)
