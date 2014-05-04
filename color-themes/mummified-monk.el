@@ -4,7 +4,7 @@
   (color-theme-install
    '(color-theme-mummified-monk
      ((foreground-color . "black")
-      (background-color . "white")
+      (background-color . "white0")
       (mouse-color . "sienna3")
       (cursor-color . "black")
       (border-color . "Blue")

@@ -15,7 +15,6 @@
 (transient-mark-mode 1)
 (blink-cursor-mode -1)
 (menu-bar-mode -1)
-(set-fringe-mode 3)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 
@@ -30,6 +29,20 @@
       ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
       ;; (set-face-attribute 'default nil :font "consolas" :height 88)
       ))
+
+;; Enable mouse support
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (global-set-key [mouse-4] '(lambda ()
+                              (interactive)
+                              (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                              (interactive)
+                              (scroll-up 1)))
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t)
+)
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -63,17 +76,19 @@
 (setq-default ruby-deep-indent-arglist nil)
 
 
-;; ERLANG 
-(setq load-path (cons  "/usr/share/emacs/site-lisp/erlang/"
-                       load-path))
-(setq erlang-root-dir "/usr/bin/")
-(setq exec-path (cons "/usr/bin" exec-path))
+;; ERLANG
+(setq load-path (cons  "/home/p/.erlangs/17.0/lib/tools-2.6.14/emacs/" load-path))
+(setq erlang-root-dir "/home/p/.erlangs/17.0/")
+(setq erlang-man-root-dir "/home/p/.erlangs/17.0/man")
+(setq exec-path (cons "/home/p/.erlangs/17.0/bin" exec-path))
+
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
   (interactive)
   (comint-send-string (current-buffer) (make-string 1 ?\C-g)))
 (add-hook 'erlang-shell-mode-hook
-      (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
+  (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
+
 (require 'erlang-start)
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
@@ -86,7 +101,7 @@
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
-;; LANGUAGE MODES 
+;; LANGUAGE MODES
 (mapcar (lambda (pair)
           (add-to-list 'auto-mode-alist pair))
         '(("\\.sxml$" . scheme-mode)
@@ -96,7 +111,10 @@
           (".scss$" . css-mode)
           (".scss.erb$" . css-mode)
           (".f$" . fundamental-mode)
-	  (".pde$" . java-mode)
+          (".spec$" . erlang-mode)
+          ("^rebar.config$" . erlang-mode)
+          (".app.src$" . erlang-mode)
+          (".pde$" . java-mode)
           ("\\.m$" . octave-mode)))
 
 ;; TEXT FORMATTING ;;
@@ -106,15 +124,18 @@
 (setq indent-line-function 'insert-tab)
 (setq-default indent-tabs-mode nil)
 (setq-default default-tab-width 2)
-(setq-default css-indent-offset 2) 
+(setq-default css-indent-offset 2)
 (setq-default c-basic-offset 2)
 (setq-default js-indent-level 2)
 
-; Use acutal tabs in Makefiles; show whitespace
+;; Clean trailing whitespace before saving
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
           (lambda()
-            (setq-default indent-tabs-mode t)
-            (setq-default tab-width 8)))
+            (setq indent-tabs-mode t)
+            (setq tab-width 8)))
 
 ;; BUFFERS ;;
 (require 'uniquify)
@@ -126,18 +147,27 @@
 (setq-default auto-save-default nil)
 
 
-; share clipboard with X
-(setq-default x-select-enable-primary t)
+;; share clipboard with X
+;;(setq-default x-select-enable-primary t)
+(require 'xclip)
+(turn-on-xclip)
 
-; keybindings 
+;; start emacs server
+(load "server")
+(unless (server-running-p) (server-start))
+
+
+;; keybindings
 (global-unset-key (kbd "C-x C-z"))
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
 (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-c f") 'ffap-other-window)
+(global-set-key [mouse-2] 'ffap-at-mouse)
 (global-set-key (kbd "M-`") 'other-window)
-(global-set-key (kbd "M-RET") 'shell2)
+(global-set-key (kbd "M-RET")
+                (lambda() (interactive) (shell-buf "*shell*")))
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 
@@ -146,15 +176,14 @@
 ;; (setq save-abbrevs t)
 ;; (quietly-read-abbrev-file)
 
-
 ;; M-x shell tweaks
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
+(setenv "EDITOR" "emacsclient")
 (setenv "NODE_NO_READLINE" "1")
 (setenv "PAGER" "cat")
 
-(defun shell2 ()
+(defun shell-buf (name)
   (interactive)
-  (shell)
-  (setq comint-scroll-show-maximum-output nil)
-  (buffer-disable-undo))
+  (shell name)
+  (setq comint-scroll-show-maximum-output nil))
