@@ -2,6 +2,12 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
 
+;; Marmalade packages
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(package-initialize)
+
 ;; LINUX/MAC OS X specific
 (cond
  ((string-equal system-type "darwin")
@@ -66,11 +72,6 @@
 ;; (ibus-define-common-key ?\C-/ nil)
 ;; (global-set-key (kbd "C-c C-i") 'ibus-toggle)
 
-;; Marmalade packages
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(package-initialize)
 
 ;; SPELLING
 ;;(setq ispell-program-name "aspell")
