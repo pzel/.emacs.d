@@ -1,8 +1,22 @@
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/ess"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/rhtml/"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
+;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
+
+;; LINUX/MAC OS X specific
+(cond
+ ((string-equal system-type "darwin")
+  (progn
+    (require 'pbcopy)
+    (turn-on-pbcopy)))
+ ((string-equal system-type "gnu/linux")
+  (progn
+    (require 'xclip)
+    (turn-on-xclip))))
+
+
+;; TRAMP
+(require 'tramp)
+(setq tramp-default-method "ssh")
 
 ;; LOOK-N-FEEL ;;
 (ffap-bindings)
@@ -18,38 +32,32 @@
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 
-(if (eq (symbol-value 'window-system) 'x)
+(if (eq (symbol-value 'window-system) 'ns)
     (progn
       (setq-default scroll-bar-mode-explicit t)
       (scroll-bar-mode -1)
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+
+
       ;; (set-face-attribute 'default nil :font "droid sans mono" :height 78)))
-      (set-face-attribute 'default nil :font "monaco" :height 88)
+      ;; (set-face-attribute 'default nil :font "monaco" :height 88)
       ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
       ;; (set-face-attribute 'default nil :font "consolas" :height 88)
       ))
-
-;; Enable mouse support
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                              (interactive)
-                              (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                              (interactive)
-                              (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
-)
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'upcase-region 'disabled nil)
 
+(require 'mouse)
+(xterm-mouse-mode t)
+(global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+(global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+(defun track-mouse (e))
+
 ;; Unicode shortcuts with M-p
-(load "macrons.el")
+;;(load "macrons.el")
 
 ;; (require 'ibus)
 ;; (add-hook 'after-init-hook 'ibus-mode-on)
@@ -65,30 +73,29 @@
 (package-initialize)
 
 ;; SPELLING
-(setq ispell-program-name "aspell")
-(setq ispell-list-command "list")
+;;(setq ispell-program-name "aspell")
+;;(setq ispell-list-command "list")
 
-(setq scheme-program-name "csi -:c")
+;;(setq scheme-program-name "csi -:c")
 
 ;; RUBY ETC.
-(require 'rhtml-mode)
-(setq-default ruby-deep-indent-paren nil)
-(setq-default ruby-deep-indent-arglist nil)
+;;(require 'rhtml-mode)
+;;(setq-default ruby-deep-indent-paren nil)
+;;(setq-default ruby-deep-indent-arglist nil)
 
 
-;; ERLANG
-(setq load-path (cons  "/home/p/.erlangs/17.0/lib/tools-2.6.14/emacs/" load-path))
-(setq erlang-root-dir "/home/p/.erlangs/17.0/")
-(setq erlang-man-root-dir "/home/p/.erlangs/17.0/man")
-(setq exec-path (cons "/home/p/.erlangs/17.0/bin" exec-path))
+;;ERLANG
+(setq load-path (cons  "~/erlang/lib/tools-2.6.14/emacs/" load-path))
+(setq erlang-root-dir "~/erlang/")
+(setq erlang-man-root-dir "~/erlang/man")
+(setq exec-path (cons "~/erlang/bin" exec-path))
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
   (interactive)
   (comint-send-string (current-buffer) (make-string 1 ?\C-g)))
 (add-hook 'erlang-shell-mode-hook
-  (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
-
+          (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
 (require 'erlang-start)
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
@@ -98,24 +105,25 @@
 (setq reb-re-syntax 'string)
 
 ;; Haskell mode
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
-          (add-to-list 'auto-mode-alist pair))
-        '(("\\.sxml$" . scheme-mode)
-          ("Gemfile$" . ruby-mode)
-          ("Rakefile$" . ruby-mode)
-          (".erb$" . rhtml-mode)
-          (".scss$" . css-mode)
-          (".scss.erb$" . css-mode)
-          (".f$" . fundamental-mode)
-          (".spec$" . erlang-mode)
-          ("^rebar.config$" . erlang-mode)
-          (".app.src$" . erlang-mode)
-          (".pde$" . java-mode)
-          ("\\.m$" . octave-mode)))
+	  (add-to-list 'auto-mode-alist pair))
+	'(("\\.sxml$" . scheme-mode)
+	  (".spec$" . erlang-mode)
+	  ("rebar.config$" . erlang-mode)
+	  ("reltool.config$" . erlang-mode)
+    (".app.src$" . erlang-mode)
+	  ("Gemfile$" . ruby-mode)
+	  ("Rakefile$" . ruby-mode)
+	  (".erb$" . rhtml-mode)
+	  (".scss$" . css-mode)
+	  (".scss.erb$" . css-mode)
+	  (".f$" . fundamental-mode)
+	  (".pde$" . java-mode)
+	  ("\\.m$" . octave-mode)))
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
@@ -133,9 +141,9 @@
 
 ;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
-          (lambda()
-            (setq indent-tabs-mode t)
-            (setq tab-width 8)))
+	  (lambda()
+	    (setq-default indent-tabs-mode t)
+	    (setq-default tab-width 8)))
 
 ;; BUFFERS ;;
 (require 'uniquify)
@@ -148,12 +156,6 @@
 (setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
 
-;; share clipboard with X
-;;(setq-default x-select-enable-primary t)
-(require 'xclip)
-(turn-on-xclip)
-
-;; start emacs server
 (load "server")
 (unless (server-running-p) (server-start))
 
@@ -167,10 +169,10 @@
 (global-set-key (kbd "C-c f") 'ffap-other-window)
 (global-set-key [mouse-2] 'ffap-at-mouse)
 (global-set-key (kbd "M-`") 'other-window)
-(global-set-key (kbd "M-RET")
-                (lambda() (interactive) (shell-buf "*shell*")))
+(global-set-key (kbd "M-RET") 'shell2)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-c m") 'erlang-man-module)
 
 ;; ;; Abbrevs
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
@@ -180,11 +182,11 @@
 ;; M-x shell tweaks
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
-(setenv "EDITOR" "emacsclient")
 (setenv "NODE_NO_READLINE" "1")
+(setenv "EDITOR" "emacsclient")
 (setenv "PAGER" "cat")
 
-(defun shell-buf (name)
+(defun shell2 ()
   (interactive)
-  (shell name)
+  (shell)
   (setq comint-scroll-show-maximum-output nil))
