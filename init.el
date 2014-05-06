@@ -13,12 +13,14 @@
  ((string-equal system-type "darwin")
   (progn
     (require 'pbcopy)
-    (turn-on-pbcopy)))
+    (turn-on-pbcopy)
+    (setq-default os-open-command "open")
+  ))
  ((string-equal system-type "gnu/linux")
   (progn
     (require 'xclip)
-    (turn-on-xclip))))
-
+    (turn-on-xclip)
+    (setq-default os-open-command "xdg-open"))))
 
 ;; TRAMP
 (require 'tramp)
@@ -174,6 +176,7 @@
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
+(global-set-key (kbd "C-c o") 'open-file-in-os)
 
 ;; ;; Abbrevs
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
@@ -191,3 +194,10 @@
   (interactive)
   (shell)
   (setq comint-scroll-show-maximum-output nil))
+
+(defun open-file-in-os ()
+  (interactive)
+  (letrec ((fname (thing-at-point 'filename))
+           (clean-fname
+            (replace-regexp-in-string "\\.\\.\\." "" fname)))
+    (shell-command (format "%s \"%s\"" os-open-command clean-fname))))
