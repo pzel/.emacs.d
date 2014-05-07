@@ -40,29 +40,40 @@
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 
-(if (eq (symbol-value 'window-system) 'ns)
+(cond
+ ((eq (symbol-value 'window-system) 'x)
     (progn
       (setq-default scroll-bar-mode-explicit t)
       (scroll-bar-mode -1)
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-
-
       ;; (set-face-attribute 'default nil :font "droid sans mono" :height 78)))
       ;; (set-face-attribute 'default nil :font "monaco" :height 88)
       ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
-      ;; (set-face-attribute 'default nil :font "consolas" :height 88)
+      'xorg-detected
       ))
+ ((eq (symbol-value 'window-system) 'ns)
+  (progn
+    (menu-bar-mode 1)
+    (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+    (set-face-attribute 'default nil :font "Courier" :height 120)
+    (setq ring-bell-function #'ignore)
+    'mac-os-detected
+    ))
+ (t ;; We're running in a terminal
+  (progn
+    (require 'mouse)
+    (xterm-mouse-mode t)
+    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+    (defun track-mouse (e))
+    'terminal-detected)))
+
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'upcase-region 'disabled nil)
 
-(require 'mouse)
-(xterm-mouse-mode t)
-(global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-(global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-(defun track-mouse (e))
 
 ;; Unicode shortcuts with M-p
 ;;(load "macrons.el")
@@ -170,9 +181,11 @@
 (global-unset-key (kbd "C-x C-p"))
 (global-set-key (kbd "C-x C-b") 'switch-to-buffer)
 (global-set-key (kbd "C-c f") 'ffap-other-window)
-(global-set-key [mouse-2] 'ffap-at-mouse)
+(global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
-(global-set-key (kbd "M-RET") 'shell2)
+(global-set-key (kbd "M-RET") 'shell1)
+(global-set-key (kbd "M-1") 'shell1)
+(global-set-key (kbd "M-2") 'shell2)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
@@ -190,10 +203,18 @@
 (setenv "EDITOR" "emacsclient")
 (setenv "PAGER" "cat")
 
+(defun shell-run (name)
+  (interactive)
+  (shell name)
+  (setq comint-scroll-show-maximum-output nil))
+
+(defun shell1 ()
+  (interactive)
+  (shell-run "*shell-1*"))
+
 (defun shell2 ()
   (interactive)
-  (shell)
-  (setq comint-scroll-show-maximum-output nil))
+  (shell-run "*shell-2*"))
 
 (defun open-file-in-os ()
   (interactive)
@@ -201,3 +222,29 @@
            (clean-fname
             (replace-regexp-in-string "\\.\\.\\." "" fname)))
     (shell-command (format "%s \"%s\"" os-open-command clean-fname))))
+
+(defun ffap-at-mouse-other-window (e)
+  (interactive "e")
+  (let ((guess
+	 ;; Maybe less surprising without the save-excursion?
+	 (save-excursion
+	   (mouse-set-point e)
+	   (ffap-guesser))))
+    (cond
+     (guess
+      (set-buffer (ffap-event-buffer e))
+      (ffap-highlight)
+      (unwind-protect
+	  (progn
+	    (sit-for 0)			; display
+	    (message "Finding `%s'" guess)
+	    (find-file-other-window guess)
+	    guess)			; success: return non-nil
+	(ffap-highlight t)))
+     ((interactive-p)
+      (if ffap-at-mouse-fallback
+	  (call-interactively ffap-at-mouse-fallback)
+	(message "No file or url found at mouse click.")
+	nil))				; no fallback, return nil
+     ;; failure: return nil
+     )))
