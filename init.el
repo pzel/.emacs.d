@@ -50,14 +50,20 @@
       ;; (set-face-attribute 'default nil :font "droid sans mono" :height 78)))
       ;; (set-face-attribute 'default nil :font "monaco" :height 88)
       ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
+      (fringe-mode '(1 . 1))
       'xorg-detected
       ))
  ((eq (symbol-value 'window-system) 'ns)
   (progn
+    (setq-default scroll-bar-mode-explicit t)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Courier" :height 120)
+    (set-face-attribute 'default nil :font "Monaco" :height 110)
     (setq ring-bell-function #'ignore)
+    (add-to-list 'default-frame-alist '(background-color . "#ffffea"))
+    (fringe-mode '(1 . 1))
     'mac-os-detected
     ))
  (t ;; We're running in a terminal
@@ -73,7 +79,7 @@
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
 (put 'upcase-region 'disabled nil)
-
+(windmove-default-keybindings)
 
 ;; Unicode shortcuts with M-p
 ;;(load "macrons.el")
