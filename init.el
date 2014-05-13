@@ -47,7 +47,7 @@
       (scroll-bar-mode -1)
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-      ;; (set-face-attribute 'default nil :font "droid sans mono" :height 78)))
+      (set-face-attribute 'default nil :font "droid sans mono" :height 92)
       ;; (set-face-attribute 'default nil :font "monaco" :height 88)
       ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
       (fringe-mode '(1 . 1))
@@ -83,13 +83,6 @@
 
 ;; Unicode shortcuts with M-p
 ;;(load "macrons.el")
-
-;; (require 'ibus)
-;; (add-hook 'after-init-hook 'ibus-mode-on)
-;; (setq ibus-agent-file-name "/usr/local/bin/ibus-el-agent")
-;; (ibus-define-common-key ?\C-\s nil)
-;; (ibus-define-common-key ?\C-/ nil)
-;; (global-set-key (kbd "C-c C-i") 'ibus-toggle)
 
 
 ;; SPELLING
