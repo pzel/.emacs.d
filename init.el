@@ -1,3 +1,6 @@
+;; Be at home.
+(cd "~/")
+
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
@@ -39,6 +42,7 @@
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
+(setq-default fill-column 80)
 
 (cond
  ((eq (symbol-value 'window-system) 'x)
@@ -47,9 +51,8 @@
       (scroll-bar-mode -1)
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+      (set-face-background 'trailing-whitespace "IndianRed1")
       (set-face-attribute 'default nil :font "droid sans mono" :height 92)
-      ;; (set-face-attribute 'default nil :font "monaco" :height 88)
-      ;; (set-face-attribute 'default nil :font "Courier 10 pitch" :height 92)
       (fringe-mode '(1 . 1))
       'xorg-detected
       ))
@@ -60,7 +63,8 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Monaco" :height 110)
+    (set-face-attribute 'default nil :font "Monaco" :height 120)
+    (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
     (add-to-list 'default-frame-alist '(background-color . "#ffffea"))
     (fringe-mode '(1 . 1))
@@ -91,11 +95,6 @@
 
 ;;(setq scheme-program-name "csi -:c")
 
-;; RUBY ETC.
-;;(require 'rhtml-mode)
-;;(setq-default ruby-deep-indent-paren nil)
-;;(setq-default ruby-deep-indent-arglist nil)
-
 
 ;;ERLANG
 (setq load-path (cons  "~/erlang/lib/tools-2.6.14/emacs/" load-path))
@@ -119,7 +118,10 @@
 
 ;; Haskell mode
 ;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+;; Text mode
+(add-hook 'text-mode-hook 'auto-fill-mode)
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
@@ -128,19 +130,17 @@
 	  (".spec$" . erlang-mode)
 	  ("rebar.config$" . erlang-mode)
 	  ("reltool.config$" . erlang-mode)
-    (".app.src$" . erlang-mode)
+	  (".app.src$" . erlang-mode)
 	  ("Gemfile$" . ruby-mode)
 	  ("Rakefile$" . ruby-mode)
-	  (".erb$" . rhtml-mode)
-	  (".scss$" . css-mode)
-	  (".scss.erb$" . css-mode)
+	  (".md$" . text-mode)
 	  (".f$" . fundamental-mode)
 	  (".pde$" . java-mode)
 	  ("\\.m$" . octave-mode)))
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
-(setq-default show-trailing-whitespace nil)
+(setq-default show-trailing-whitespace 1)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 (setq-default indent-tabs-mode nil)
@@ -150,7 +150,7 @@
 (setq-default js-indent-level 2)
 
 ;; Clean trailing whitespace before saving
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
@@ -178,7 +178,7 @@
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
-(global-set-key (kbd "C-x C-b") 'switch-to-buffer)
+(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-c f") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
@@ -205,7 +205,7 @@
 (defun shell-run (name)
   (interactive)
   (shell name)
-  (setq comint-scroll-show-maximum-output nil))
+  (setq show-trailing-whitespace nil))
 
 (defun shell1 ()
   (interactive)
@@ -247,3 +247,7 @@
 	nil))				; no fallback, return nil
      ;; failure: return nil
      )))
+
+
+
+
