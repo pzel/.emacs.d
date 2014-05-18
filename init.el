@@ -135,12 +135,13 @@
 	  ("Rakefile$" . ruby-mode)
 	  (".md$" . text-mode)
 	  (".f$" . fundamental-mode)
+    (".tab$" . text-mode)
 	  (".pde$" . java-mode)
 	  ("\\.m$" . octave-mode)))
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
-(setq-default show-trailing-whitespace 1)
+(setq-default show-trailing-whitespace nil)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 (setq-default indent-tabs-mode nil)
@@ -148,6 +149,12 @@
 (setq-default css-indent-offset 2)
 (setq-default c-basic-offset 2)
 (setq-default js-indent-level 2)
+
+;; Show trailing whitespace in the following modes:
+(mapcar (lambda (mode)
+          (add-hook mode (lambda ()
+                           (setq show-trailing-whitespace 1))))
+        '(erlang-mode-hook makefile-mode-hook))
 
 ;; Clean trailing whitespace before saving
 ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -247,7 +254,3 @@
 	nil))				; no fallback, return nil
      ;; failure: return nil
      )))
-
-
-
-
