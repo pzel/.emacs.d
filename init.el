@@ -1,6 +1,3 @@
-;; Be at home.
-(cd "~/")
-
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
@@ -25,6 +22,8 @@
     (turn-on-xclip)
     (setq-default os-open-command "xdg-open"))))
 
+
+
 ;; TRAMP
 (require 'tramp)
 (setq tramp-default-method "ssh")
@@ -43,6 +42,10 @@
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 (setq-default fill-column 80)
+
+
+;; Imenu jum
+(global-set-key (kbd "M-i") 'imenu)
 
 (cond
  ((eq (symbol-value 'window-system) 'x)
@@ -63,10 +66,15 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Monaco" :height 120)
+    (set-face-attribute 'default nil :font "Monaco" :height 130)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
     (add-to-list 'default-frame-alist '(background-color . "#ffffea"))
+    ;; light green-on-dark green
+    ;; (add-to-list 'default-frame-alist '(background-color . "#0A4B08"))
+    ;; (add-to-list 'default-frame-alist '(foreground-color . "green3"))
+    (setq ispell-program-name "/usr/local/bin/ispell")
+    (setq ispell-list-command "list")
     (fringe-mode '(1 . 1))
     'mac-os-detected
     ))
@@ -87,13 +95,6 @@
 
 ;; Unicode shortcuts with M-p
 ;;(load "macrons.el")
-
-
-;; SPELLING
-;;(setq ispell-program-name "aspell")
-;;(setq ispell-list-command "list")
-
-;;(setq scheme-program-name "csi -:c")
 
 
 ;;ERLANG
@@ -171,7 +172,7 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 
-;; BACKUP/AUTOSAVE
+(setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
 (setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
@@ -254,3 +255,13 @@
 	nil))				; no fallback, return nil
      ;; failure: return nil
      )))
+
+
+;; Startup
+;; Be at home. Open up some default buffers
+(cd "~/")
+(require 'org)
+s(shell1)
+(split-window-right)
+(find-file-other-window (expand-file-name "~/Notes/Notes.org"))
+

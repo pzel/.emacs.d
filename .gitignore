@@ -1,8 +1,7 @@
 *.elc
-auto-save-list
+abbrev_defs
+auto-save-list/
 bin/
-elpa/*
+elpa/
 tramp
-url/*
-
-
+url/
