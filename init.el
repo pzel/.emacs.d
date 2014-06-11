@@ -259,9 +259,7 @@
 
 ;; Startup
 ;; Be at home. Open up some default buffers
-(cd "~/")
 (require 'org)
-s(shell1)
-(split-window-right)
 (find-file-other-window (expand-file-name "~/Notes/Notes.org"))
-
+(cd "~/")
+(shell1)
