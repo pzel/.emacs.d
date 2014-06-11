@@ -3,5 +3,6 @@ abbrev_defs
 auto-save-list/
 bin/
 elpa/
+thumbs/
 tramp
 url/
