@@ -1,5 +1,8 @@
 *.elc
 auto-save-list
+bin/
 elpa/*
+tramp
 url/*
+
 
