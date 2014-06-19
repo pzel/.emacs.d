@@ -123,7 +123,6 @@
 
 ;; Text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
-(add-hook 'text-mode-hook 'refill-mode)
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
