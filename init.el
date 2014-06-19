@@ -122,6 +122,7 @@
 
 ;; Text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
+(add-hook 'text-mode-hook 'refill-mode)
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
@@ -206,7 +207,7 @@
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
 (setenv "NODE_NO_READLINE" "1")
-(setenv "EDITOR" "emacsclient")
+(setenv "EDITOR" "ema")
 (setenv "PAGER" "cat")
 
 (defun shell-run (name)
