@@ -66,7 +66,7 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Monaco" :height 130)
+    (set-face-attribute 'default nil :font "Monaco" :height 120)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
     (add-to-list 'default-frame-alist '(background-color . "#ffffea"))
@@ -197,6 +197,7 @@
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
 (global-set-key (kbd "C-c o") 'open-file-in-os)
+(global-set-key (kbd "C-x |") 'toggle-window-split)
 
 ;; ;; Abbrevs
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
@@ -256,6 +257,30 @@
      ;; failure: return nil
      )))
 
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
 
 ;; Startup
 ;; Be at home. Open up some default buffers
@@ -263,3 +288,4 @@
 (find-file-other-window (expand-file-name "~/Notes/Notes.org"))
 (cd "~/")
 (shell1)
+(delete-other-windows)
