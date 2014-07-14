@@ -24,6 +24,8 @@
 
 
 
+
+
 ;; TRAMP
 (require 'tramp)
 (setq tramp-default-method "ssh")
@@ -42,10 +44,6 @@
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 (setq-default fill-column 80)
-
-
-;; Imenu jum
-(global-set-key (kbd "M-i") 'imenu)
 
 (cond
  ((eq (symbol-value 'window-system) 'x)
@@ -69,10 +67,11 @@
     (set-face-attribute 'default nil :font "Monaco" :height 120)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
-    (add-to-list 'default-frame-alist '(background-color . "#ffffea"))
+
     ;; light green-on-dark green
     ;; (add-to-list 'default-frame-alist '(background-color . "#0A4B08"))
     ;; (add-to-list 'default-frame-alist '(foreground-color . "green3"))
+
     (setq ispell-program-name "/usr/local/bin/ispell")
     (setq ispell-list-command "list")
     (fringe-mode '(1 . 1))
@@ -86,6 +85,7 @@
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
     (defun track-mouse (e))
     'terminal-detected)))
+
 
 
 ;; INPUT & CONTROL
