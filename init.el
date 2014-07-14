@@ -23,9 +23,6 @@
     (setq-default os-open-command "xdg-open"))))
 
 
-
-
-
 ;; TRAMP
 (require 'tramp)
 (setq tramp-default-method "ssh")
@@ -53,7 +50,7 @@
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
-      (set-face-attribute 'default nil :font "droid sans mono" :height 92)
+      (set-face-attribute 'default nil :font "Monaco" :height 88)
       (fringe-mode '(1 . 1))
       'xorg-detected
       ))
@@ -85,8 +82,6 @@
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
     (defun track-mouse (e))
     'terminal-detected)))
-
-
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -186,8 +181,9 @@
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
+(global-unset-key (kbd "C-x C-r"))
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
-(global-set-key (kbd "C-c f") 'ffap-other-window)
+(global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
 (global-set-key (kbd "M-RET") 'shell1)
