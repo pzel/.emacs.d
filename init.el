@@ -54,7 +54,8 @@
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
-      (set-face-attribute 'default nil :font "Monaco" :height 88)
+      (set-face-attribute 'default nil :font "Courier 10 Pitch" :height 88)
+;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
       'xorg-detected
       ))
