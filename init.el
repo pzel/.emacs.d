@@ -50,7 +50,8 @@
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
-      (set-face-attribute 'default nil :font "Courier 10 Pitch" :height 88)
+      (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
+;;    (set-face-attribute 'default nil :font "Monaco" :height 96)
 ;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
       'xorg-detected
@@ -98,6 +99,8 @@
 (setq erlang-root-dir "~/erlang/")
 (setq erlang-man-root-dir "~/erlang/man")
 (setq exec-path (cons "~/erlang/bin" exec-path))
+(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
+(require 'wrangler)
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
@@ -187,11 +190,15 @@
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
+(global-set-key (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "M-RET") 'shell1)
 (global-set-key (kbd "M-1") 'shell1)
 (global-set-key (kbd "M-2") 'shell2)
+(global-set-key (kbd "M-3") 'shell3)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c s") 'search-all-buffers)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
 (global-set-key (kbd "C-c o") 'open-file-in-os)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
@@ -221,12 +228,25 @@
   (interactive)
   (shell-run "*shell-2*"))
 
+(defun shell3 ()
+  (interactive)
+  (shell-run "*shell-3*"))
+
+(defun clear-buffer-permenantly ()
+  "clear whole buffer, contents are not added to the kill ring"
+  (interactive)
+  (delete-region (point-min) (point-max)))
+
 (defun open-file-in-os ()
   (interactive)
   (letrec ((fname (thing-at-point 'filename))
            (clean-fname
             (replace-regexp-in-string "\\.\\.\\." "" fname)))
     (shell-command (format "%s \"%s\"" os-open-command clean-fname))))
+
+(defun search-all-buffers (expr)
+  (interactive "sSearch all buffers for: ")
+  (multi-occur-in-matching-buffers ".*" expr))
 
 (defun ffap-at-mouse-other-window (e)
   (interactive "e")
