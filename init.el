@@ -176,13 +176,13 @@
 (load "server")
 (unless (server-running-p) (server-start))
 
-
 ;; keybindings
 (global-unset-key (kbd "C-x C-z"))
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
 (global-unset-key (kbd "C-x C-r"))
+
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
@@ -190,6 +190,7 @@
 (global-set-key (kbd "M-RET") 'shell1)
 (global-set-key (kbd "M-1") 'shell1)
 (global-set-key (kbd "M-2") 'shell2)
+(global-set-key (kbd "M-3") 'shell3)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
@@ -220,6 +221,10 @@
 (defun shell2 ()
   (interactive)
   (shell-run "*shell-2*"))
+
+(defun shell3 ()
+  (interactive)
+  (shell-run "*shell-3*"))
 
 (defun open-file-in-os ()
   (interactive)
@@ -279,10 +284,11 @@
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
+;; Fun
+(setq-default gnugo-program "/usr/local/bin/gnugo")
+
 ;; Startup
-;; Be at home. Open up some default buffers
 (require 'org)
 (find-file-other-window (expand-file-name "~/Notes/Notes.org"))
-(cd "~/")
 (shell1)
 (delete-other-windows)
