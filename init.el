@@ -31,15 +31,15 @@
 (setq-default inhibit-startup-message t)
 (if (fboundp 'menu-bar-mode) (menu-bar-mode 0))
 (global-font-lock-mode 0)
-(show-paren-mode 1)
 (column-number-mode t)
 (size-indication-mode t)
-(transient-mark-mode 1)
 (blink-cursor-mode -1)
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 (setq-default fill-column 80)
+
+
 
 (cond
  ((eq (symbol-value 'window-system) 'x)
@@ -186,11 +186,14 @@
 (global-unset-key (kbd "C-x C-p"))
 (global-unset-key (kbd "C-x C-r"))
 
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
 (global-set-key (kbd "C-<tab>") 'other-window)
+(global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "M-RET") 'shell1)
 (global-set-key (kbd "M-1") 'shell1)
 (global-set-key (kbd "M-2") 'shell2)
