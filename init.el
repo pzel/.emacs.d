@@ -22,7 +22,6 @@
     (turn-on-xclip)
     (setq-default os-open-command "xdg-open"))))
 
-
 ;; TRAMP
 (require 'tramp)
 (setq tramp-default-method "ssh")
@@ -64,7 +63,7 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Monaco" :height 120)
+    (set-face-attribute 'default nil :font "Monaco" :height 140)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
 
@@ -180,13 +179,13 @@
 (load "server")
 (unless (server-running-p) (server-start))
 
-
 ;; keybindings
 (global-unset-key (kbd "C-x C-z"))
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
 (global-unset-key (kbd "C-x C-r"))
+
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
@@ -300,10 +299,11 @@
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
+;; Fun
+(setq-default gnugo-program "/usr/local/bin/gnugo")
+
 ;; Startup
-;; Be at home. Open up some default buffers
 (require 'org)
 (find-file-other-window (expand-file-name "~/Notes/Notes.org"))
-(cd "~/")
 (shell1)
 (delete-other-windows)
