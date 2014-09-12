@@ -50,8 +50,9 @@
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
-      (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
-;;    (set-face-attribute 'default nil :font "Monaco" :height 96)
+;;    (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 88)
+;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
       'xorg-detected
@@ -99,8 +100,8 @@
 (setq erlang-root-dir "~/erlang/")
 (setq erlang-man-root-dir "~/erlang/man")
 (setq exec-path (cons "~/erlang/bin" exec-path))
-(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
-(require 'wrangler)
+;(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
+;(require 'wrangler)
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
