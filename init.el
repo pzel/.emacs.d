@@ -16,7 +16,8 @@
     (turn-on-pbcopy)
     (setq-default os-open-command "open")
   ))
- ((string-equal system-type "gnu/linux")
+ ((and (equal (system-name) "kos")
+       (string-equal system-type "gnu/linux"))
   (progn
     (require 'xclip)
     (turn-on-xclip)
@@ -142,6 +143,7 @@
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
 (setq-default show-trailing-whitespace nil)
+(show-paren-mode 1)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 (setq-default indent-tabs-mode nil)
