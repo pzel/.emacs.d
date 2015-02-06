@@ -38,7 +38,7 @@
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
-(setq-default fill-column 80)
+(setq-default fill-column 78)
 
 
 
@@ -51,7 +51,7 @@
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
 ;;    (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 88)
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 92)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
@@ -100,8 +100,8 @@
 (setq erlang-root-dir "~/erlang/")
 (setq erlang-man-root-dir "~/erlang/man")
 (setq exec-path (cons "~/erlang/bin" exec-path))
-;(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
-;(require 'wrangler)
+(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
+(require 'wrangler)
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
@@ -120,6 +120,8 @@
 ;; Haskell mode
 ;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(setq-default haskell-indent-offset 2)
 
 ;; Text mode
 (add-hook 'text-mode-hook 'auto-fill-mode)
@@ -156,7 +158,7 @@
 (mapcar (lambda (mode)
           (add-hook mode (lambda ()
                            (setq show-trailing-whitespace 1))))
-        '(erlang-mode-hook makefile-mode-hook))
+        '(erlang-mode-hook haskell-mode-hook makefile-mode-hook))
 
 ;; Clean trailing whitespace before saving
 ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -205,7 +207,7 @@
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
-(global-set-key (kbd "C-c o") 'open-file-in-os)
+(global-set-key (kbd "C-c u") 'w3m-url-at-point)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
 ;; ;; Abbrevs
@@ -242,12 +244,14 @@
   (interactive)
   (delete-region (point-min) (point-max)))
 
-(defun open-file-in-os ()
+(defun w3m-url-at-point ()
   (interactive)
   (letrec ((fname (thing-at-point 'filename))
            (clean-fname
-            (replace-regexp-in-string "\\.\\.\\." "" fname)))
-    (shell-command (format "%s \"%s\"" os-open-command clean-fname))))
+            (replace-regexp-in-string "\\.\\.\\." "" fname))
+           (prepended-fname
+            (replace-regexp-in-string "^/" "file:///" clean-fname)))
+    (browse-url (format "%s" prepended-fname))))
 
 (defun search-all-buffers (expr)
   (interactive "sSearch all buffers for: ")
@@ -256,26 +260,26 @@
 (defun ffap-at-mouse-other-window (e)
   (interactive "e")
   (let ((guess
-	 ;; Maybe less surprising without the save-excursion?
-	 (save-excursion
-	   (mouse-set-point e)
-	   (ffap-guesser))))
+         ;; Maybe less surprising without the save-excursion?
+         (save-excursion
+           (mouse-set-point e)
+           (ffap-guesser))))
     (cond
      (guess
       (set-buffer (ffap-event-buffer e))
       (ffap-highlight)
       (unwind-protect
-	  (progn
-	    (sit-for 0)			; display
-	    (message "Finding `%s'" guess)
-	    (find-file-other-window guess)
-	    guess)			; success: return non-nil
-	(ffap-highlight t)))
+          (progn
+            (sit-for 0)			; display
+            (message "Finding `%s'" guess)
+            (find-file-other-window guess)
+            guess)			; success: return non-nil
+        (ffap-highlight t)))
      ((interactive-p)
       (if ffap-at-mouse-fallback
-	  (call-interactively ffap-at-mouse-fallback)
-	(message "No file or url found at mouse click.")
-	nil))				; no fallback, return nil
+          (call-interactively ffap-at-mouse-fallback)
+        (message "No file or url found at mouse click.")
+        nil))				; no fallback, return nil
      ;; failure: return nil
      )))
 
@@ -305,10 +309,12 @@
 	  (if this-win-2nd (other-window 1))))))
 
 ;; Fun
-(setq-default gnugo-program "/usr/local/bin/gnugo")
 
-;; Startup
-(require 'org)
-(find-file-other-window (expand-file-name "~/Notes/Notes.org"))
-(shell1)
-(delete-other-windows)
+(setq browse-url-browser-function 'w3m-browse-url)
+(defun dump-url (url &rest ignore)
+  "Dump URL using w3m."
+  (interactive "sURL: ")
+  (shell-command (concat "w3m " url))
+  (pop-to-buffer "*Shell Command Output*")
+  (setq truncate-lines t))
+
