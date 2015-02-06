@@ -208,6 +208,7 @@
 (global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
 (global-set-key (kbd "C-c u") 'w3m-url-at-point)
+(global-set-key (kbd "C-c U") 'w3m-dump-at-point)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
 ;; ;; Abbrevs
@@ -244,14 +245,23 @@
   (interactive)
   (delete-region (point-min) (point-max)))
 
-(defun w3m-url-at-point ()
+(defun open-url-at-point (fun)
   (interactive)
   (letrec ((fname (thing-at-point 'filename))
            (clean-fname
             (replace-regexp-in-string "\\.\\.\\." "" fname))
            (prepended-fname
             (replace-regexp-in-string "^/" "file:///" clean-fname)))
-    (browse-url (format "%s" prepended-fname))))
+    (funcall fun (format "%s" prepended-fname))))
+
+(defun w3m-url-at-point ()
+  (interactive)
+  (open-url-at-point 'browse-url))
+
+(defun w3m-dump-at-point ()
+  (interactive)
+  (open-url-at-point 'dump-url))
+
 
 (defun search-all-buffers (expr)
   (interactive "sSearch all buffers for: ")
