@@ -64,7 +64,7 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Monaco" :height 140)
+;;    (set-face-attribute 'default nil :font "Monaco" :height 140)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
 
@@ -99,9 +99,12 @@
 (setq load-path (cons  "~/erlang/lib/tools-2.6.14/emacs/" load-path))
 (setq erlang-root-dir "~/erlang/")
 (setq erlang-man-root-dir "~/erlang/man")
-(setq exec-path (cons "~/erlang/bin" exec-path))
+(setq exec-path (append (list "/usr/local/bin" "~/erlang/bin") exec-path))
 (add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
-(require 'wrangler)
+
+(condition-case nil
+    (require 'wrangler)
+  (error nil))
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
@@ -183,34 +186,6 @@
 (load "server")
 (unless (server-running-p) (server-start))
 
-;; keybindings
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key (kbd "C-x C-b"))
-(global-unset-key (kbd "C-x m"))
-(global-unset-key (kbd "C-x C-p"))
-(global-unset-key (kbd "C-x C-r"))
-
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
-(global-set-key (kbd "C-x C-r") 'ffap-other-window)
-(global-set-key [mouse-3] 'ffap-at-mouse-other-window)
-(global-set-key (kbd "M-`") 'other-window)
-(global-set-key (kbd "C-<tab>") 'other-window)
-(global-set-key "\M-g" 'goto-line)
-(global-set-key (kbd "M-RET") 'shell1)
-(global-set-key (kbd "M-1") 'shell1)
-(global-set-key (kbd "M-2") 'shell2)
-(global-set-key (kbd "M-3") 'shell3)
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-c s") 'search-all-buffers)
-(global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
-(global-set-key (kbd "C-c m") 'erlang-man-module)
-(global-set-key (kbd "C-c u") 'w3m-url-at-point)
-(global-set-key (kbd "C-c U") 'w3m-dump-at-point)
-(global-set-key (kbd "C-x |") 'toggle-window-split)
-
 ;; ;; Abbrevs
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 ;; (setq save-abbrevs t)
@@ -246,7 +221,6 @@
   (delete-region (point-min) (point-max)))
 
 (defun open-url-at-point (fun)
-  (interactive)
   (letrec ((fname (thing-at-point 'filename))
            (clean-fname
             (replace-regexp-in-string "\\.\\.\\." "" fname))
@@ -254,7 +228,7 @@
             (replace-regexp-in-string "^/" "file:///" clean-fname)))
     (funcall fun (format "%s" prepended-fname))))
 
-(defun w3m-url-at-point ()
+(defun internally-browse-url-at-point ()
   (interactive)
   (open-url-at-point 'browse-url))
 
@@ -318,9 +292,8 @@
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
-;; Fun
-
 (setq browse-url-browser-function 'w3m-browse-url)
+
 (defun dump-url (url &rest ignore)
   "Dump URL using w3m."
   (interactive "sURL: ")
@@ -328,3 +301,30 @@
   (pop-to-buffer "*Shell Command Output*")
   (setq truncate-lines t))
 
+;; keybindings
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key (kbd "C-x C-b"))
+(global-unset-key (kbd "C-x m"))
+(global-unset-key (kbd "C-x C-p"))
+(global-unset-key (kbd "C-x C-r"))
+
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+(global-set-key (kbd "C-x C-r") 'ffap-other-window)
+(global-set-key [mouse-3] 'ffap-at-mouse-other-window)
+(global-set-key (kbd "M-`") 'other-window)
+(global-set-key (kbd "C-<tab>") 'other-window)
+(global-set-key "\M-g" 'goto-line)
+(global-set-key (kbd "M-RET") 'shell1)
+(global-set-key (kbd "M-1") 'shell1)
+(global-set-key (kbd "M-2") 'shell2)
+(global-set-key (kbd "M-3") 'shell3)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c s") 'search-all-buffers)
+(global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
+(global-set-key (kbd "C-c m") 'erlang-man-module)
+(global-set-key (kbd "C-c u") 'internally-browse-url-at-point)
+(global-set-key (kbd "C-c U") 'w3m-dump-at-point)
+(global-set-key (kbd "C-x |") 'toggle-window-split)
