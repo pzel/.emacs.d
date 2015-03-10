@@ -116,6 +116,8 @@
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 
+(require 'slim-erlang)
+
 ;; Sane regular expressions
 (require 're-builder)
 (setq reb-re-syntax 'string)
