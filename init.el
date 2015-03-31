@@ -64,7 +64,7 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-;;    (set-face-attribute 'default nil :font "Monaco" :height 140)
+    (set-face-attribute 'default nil :font "Menlo" :height 120)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
 
@@ -129,7 +129,10 @@
 (setq-default haskell-indent-offset 2)
 
 ;; Text mode
-(add-hook 'text-mode-hook 'auto-fill-mode)
+(add-hook 'text-mode-hook
+	  (lambda()
+	    (remove-hook 'before-save-hook
+			 'delete-trailing-whitespace nil 'locally-removed)))
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
@@ -166,7 +169,7 @@
         '(erlang-mode-hook haskell-mode-hook makefile-mode-hook))
 
 ;; Clean trailing whitespace before saving
-;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
@@ -309,6 +312,10 @@
 (global-unset-key (kbd "C-x m"))
 (global-unset-key (kbd "C-x C-p"))
 (global-unset-key (kbd "C-x C-r"))
+(global-unset-key (kbd "C-s"))
+(global-unset-key (kbd "C-r"))
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
