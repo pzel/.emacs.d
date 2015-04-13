@@ -3,6 +3,8 @@ abbrev_defs
 auto-save-list/
 bin/
 elpa/
+eshell/
+games/
 thumbs/
 tramp
 url/
