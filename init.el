@@ -64,7 +64,7 @@
     (tool-bar-mode -1)
     (menu-bar-mode 1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Menlo" :height 120)
+    (set-face-attribute 'default nil :font "Menlo" :height 140)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (setq ring-bell-function #'ignore)
 

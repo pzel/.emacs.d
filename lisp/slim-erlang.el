@@ -56,3 +56,16 @@ terminate(_Reason, _State) -> ok.
 
 code_change(_OldVsn, State, _Extra) -> {ok, State}."
    n))
+
+(tempo-define-template
+ "slim-erlang-ct-suite"
+ '("-module().
+-compile(export_all).
+
+all() ->
+    [ it_works ].
+
+init_per_suite(C) -> C.
+
+it_works(_) -> ok = (fun() -> not_ok end)()."
+   n))
