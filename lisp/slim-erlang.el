@@ -65,7 +65,9 @@ code_change(_OldVsn, State, _Extra) -> {ok, State}."
 all() ->
     [ it_works ].
 
-init_per_suite(C) -> C.
+init_per_suite(C) ->
+    C.
 
-it_works(_) -> ok = (fun() -> not_ok end)()."
+it_works(_) ->
+    ok = (fun() -> not_ok end)()."
    n))
