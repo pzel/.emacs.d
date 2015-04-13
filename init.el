@@ -314,9 +314,10 @@
 (global-unset-key (kbd "C-x C-r"))
 (global-unset-key (kbd "C-s"))
 (global-unset-key (kbd "C-r"))
+(global-unset-key (kbd "C-z"))
+
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
