@@ -315,6 +315,7 @@
 (global-unset-key (kbd "C-s"))
 (global-unset-key (kbd "C-r"))
 (global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-o"))
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -324,6 +325,7 @@
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 (global-set-key (kbd "M-`") 'other-window)
+(global-set-key (kbd "C-o C-o") 'other-window)
 (global-set-key (kbd "C-<tab>") 'other-window)
 (global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "M-RET") 'shell1)
