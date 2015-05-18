@@ -152,6 +152,7 @@
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
+(setq-default electric-indent-mode 0)
 (setq-default show-trailing-whitespace nil)
 (show-paren-mode 1)
 (setq-default tab-width 2)
