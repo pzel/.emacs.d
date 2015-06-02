@@ -38,7 +38,7 @@
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
-(setq-default fill-column 78)
+(setq-default fill-column 79)
 
 
 
@@ -129,10 +129,7 @@
 (setq-default haskell-indent-offset 2)
 
 ;; Text mode
-(add-hook 'text-mode-hook
-	  (lambda()
-	    (remove-hook 'before-save-hook
-			 'delete-trailing-whitespace nil 'locally-removed)))
+(add-hook 'text-mode-hook 'auto-fill-mode)
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
@@ -152,7 +149,7 @@
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
-(setq-default electric-indent-mode 0)
+(electric-indent-mode 0)
 (setq-default show-trailing-whitespace nil)
 (show-paren-mode 1)
 (setq-default tab-width 2)
