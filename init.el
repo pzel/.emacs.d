@@ -229,14 +229,17 @@
             (replace-regexp-in-string "^/" "file:///" clean-fname)))
     (funcall fun (format "%s" prepended-fname))))
 
-(defun internally-browse-url-at-point ()
+(defun browse-url-at-point ()
   (interactive)
-  (open-url-at-point 'browse-url))
+  (open-url-at-point 
+   (lambda(name)
+     (message name)
+     (let ((process-connection-type nil)) 
+     (start-process "" nil "/usr/local/bin/open_in_current_browser" name)))))
 
 (defun w3m-dump-at-point ()
   (interactive)
   (open-url-at-point 'dump-url))
-
 
 (defun search-all-buffers (expr)
   (interactive "sSearch all buffers for: ")
@@ -333,6 +336,6 @@
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
-(global-set-key (kbd "C-c u") 'internally-browse-url-at-point)
+(global-set-key (kbd "C-c u") 'browse-url-at-point)
 (global-set-key (kbd "C-c U") 'w3m-dump-at-point)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
