@@ -39,7 +39,7 @@
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
-(setq-default fill-column 78)
+(setq-default fill-column 79)
 
 
 
@@ -129,7 +129,6 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 (setq-default haskell-indent-offset 2)
 
-
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
 	  (add-to-list 'auto-mode-alist pair))
@@ -148,7 +147,7 @@
 
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
-(setq-default electric-indent-mode 0)
+(electric-indent-mode 0)
 (setq-default show-trailing-whitespace nil)
 (show-paren-mode 1)
 (setq-default tab-width 2)
