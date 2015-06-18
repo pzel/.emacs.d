@@ -1,5 +1,6 @@
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
 
 ;; Marmalade packages
@@ -128,11 +129,6 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 (setq-default haskell-indent-offset 2)
 
-;; Text mode
-(add-hook 'text-mode-hook
-	  (lambda()
-	    (remove-hook 'before-save-hook
-			 'delete-trailing-whitespace nil 'locally-removed)))
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
@@ -170,7 +166,7 @@
         '(erlang-mode-hook haskell-mode-hook makefile-mode-hook))
 
 ;; Clean trailing whitespace before saving
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
