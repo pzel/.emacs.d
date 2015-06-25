@@ -52,7 +52,7 @@
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
 ;;    (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 92)
+      (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 102)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
@@ -103,9 +103,7 @@
 (setq exec-path (append (list "/usr/local/bin" "~/erlang/bin") exec-path))
 (add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
 
-(condition-case nil
-    (require 'wrangler)
-  (error nil))
+(condition-case nil (require 'wrangler) (error nil))
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (defun inf-ctl-g ()
@@ -148,6 +146,7 @@
 ;; TEXT FORMATTING ;;
 ;; (require 'smart-tab)
 (electric-indent-mode 0)
+(setq-default electric-indent-mode 0)
 (setq-default show-trailing-whitespace nil)
 (show-paren-mode 1)
 (setq-default tab-width 2)
@@ -339,3 +338,17 @@
 (global-set-key (kbd "C-c u") 'browse-url-at-point)
 (global-set-key (kbd "C-c U") 'w3m-dump-at-point)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
