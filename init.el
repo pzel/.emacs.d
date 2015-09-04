@@ -20,8 +20,8 @@
  ((and (equal (system-name) "kos")
        (string-equal system-type "gnu/linux"))
   (progn
-    (require 'xclip)
-    (turn-on-xclip)
+    ;;(require 'xclip)
+    ;;(turn-on-xclip)
     (setq-default os-open-command "xdg-open"))))
 
 ;; TRAMP
@@ -40,8 +40,9 @@
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
 (setq-default fill-column 79)
-
-
+(setq-default Buffer-menu-name-width 35)
+(setq-default Buffer-menu-mode-width 10)
+(setq-default Buffer-menu-size-width 10)
 
 (cond
  ((eq (symbol-value 'window-system) 'x)
@@ -52,7 +53,8 @@
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
 ;;    (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
-      (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 102)
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 102)
+;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "6x13")
       (fringe-mode '(1 . 1))
@@ -112,6 +114,7 @@
 (add-hook 'erlang-shell-mode-hook
           (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
 (require 'erlang-start)
+(setq-default erlang-indent-level 2)
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 
@@ -131,6 +134,8 @@
 (mapcar (lambda (pair)
 	  (add-to-list 'auto-mode-alist pair))
 	'(("\\.sxml$" . scheme-mode)
+	  (".sld$" . scheme-mode)
+	  (".lfe$" . scheme-mode)
 	  (".spec$" . erlang-mode)
 	  ("rebar.config$" . erlang-mode)
 	  ("reltool.config$" . erlang-mode)
@@ -138,9 +143,9 @@
 	  ("Gemfile$" . ruby-mode)
 	  ("Rakefile$" . ruby-mode)
 	  (".md$" . text-mode)
-	  (".f$" . fundamental-mode)
-    (".tab$" . text-mode)
+	  (".tab$" . text-mode)
 	  (".pde$" . java-mode)
+	  (".f$" . fundamental-mode)
 	  ("\\.m$" . octave-mode)))
 
 ;; TEXT FORMATTING ;;
@@ -230,10 +235,10 @@
 
 (defun browse-url-at-point ()
   (interactive)
-  (open-url-at-point 
+  (open-url-at-point
    (lambda(name)
      (message name)
-     (let ((process-connection-type nil)) 
+     (let ((process-connection-type nil))
      (start-process "" nil "/usr/local/bin/open_in_current_browser" name)))))
 
 (defun w3m-dump-at-point ()
