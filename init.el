@@ -1,6 +1,7 @@
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
 
 ;; Marmalade packages
