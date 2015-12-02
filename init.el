@@ -33,7 +33,8 @@
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
 (if (fboundp 'menu-bar-mode) (menu-bar-mode 0))
-(global-font-lock-mode 0)
+(global-font-lock-mode 1)
+(set-face-underline-p 'underline nil)
 (column-number-mode t)
 (size-indication-mode t)
 (blink-cursor-mode -1)
@@ -53,14 +54,17 @@
       (tool-bar-mode -1)
       (setq-default mouse-autoselect-window t) ;focus-follows-mouse
       (set-face-background 'trailing-whitespace "IndianRed1")
-;;    (set-face-attribute 'default nil :font "LucidaTypewriter" :height 88)
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 102)
+;;    (set-face-attribute 'default nil :font "PerfectDos" :height 120)
+;;    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 105)
 ;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
+    (set-face-attribute 'default nil :font "Iosevka CC" :height 102)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
-;;    (set-face-attribute 'default nil :font "6x13")
-      (fringe-mode '(1 . 1))
-      'xorg-detected
-      ))
+;;    (set-face-attribute 'default nil :font "8x13bold")
+    (fringe-mode '(1 . 1))
+    (color-theme-initialize)
+    (load-file "~/.emacs.d/lisp/minimal-light-theme.el")
+    'xorg-detected
+    ))
  ((eq (symbol-value 'window-system) 'ns)
   (progn
     (setq-default scroll-bar-mode-explicit t)

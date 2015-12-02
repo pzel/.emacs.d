@@ -35,7 +35,9 @@
       (gray255   "#eeeeee")   ;; fringe
       (red160    "#d70000")   ;; match
       (blue066   "#5f8787")   ;; strings
-      (gray253   "#dadada")   ;; line numbers
+      (gray253   "#dadada")
+      (soapy     "#eaffff")
+      (strawberry "#f2e6e4")
       (yellow187 "#dfdfaf"))  ;; current line
 
 
@@ -43,7 +45,7 @@
   (custom-theme-set-faces
    'minimal-light
    
-   `(default ((t (:foreground ,black016 :background ,yellow230))))
+   `(default ((t (:foreground ,black016 :background ,white231))))
    `(cursor  ((t (:background ,black016))))
    
    ;; Highlighting faces
@@ -53,8 +55,8 @@
    
    ;; Font lock faces
    ;;   `(font-lock-string-face        ((t (:foreground ,blue066))))
-   `(font-lock-string-face        ((t (:foreground ,black016))))
-   `(font-lock-comment-face       ((t (:foreground ,gray243))))
+   `(font-lock-string-face        ((t (:foreground ,black016 :background ,yellow230))))
+   `(font-lock-comment-face       ((t (:foreground ,red160 :background ,white231))))
    `(font-lock-constant-face      ((t (:foreground ,black016))))
    `(font-lock-function-name-face ((t (:foreground ,black016 :weight bold))))
    `(font-lock-variable-name-face ((t (:foreground ,black016))))
