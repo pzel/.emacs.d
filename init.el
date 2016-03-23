@@ -57,7 +57,7 @@
 ;;    (set-face-attribute 'default nil :font "PerfectDos" :height 120)
 ;;    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 105)
 ;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
-    (set-face-attribute 'default nil :font "Iosevka CC" :height 102)
+    (set-face-attribute 'default nil :font "Iosevka CC" :height 132)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "8x13bold")
     (fringe-mode '(1 . 1))
