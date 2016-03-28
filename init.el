@@ -60,6 +60,7 @@
     (set-face-attribute 'default nil :font "Iosevka CC" :height 132)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "8x13bold")
+    (set-frame-size (selected-frame) 130 31)
     (fringe-mode '(1 . 1))
     (color-theme-initialize)
     (load-file "~/.emacs.d/lisp/minimal-light-theme.el")
@@ -132,8 +133,11 @@
 ;; Haskell mode
 ;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 (setq-default haskell-indent-offset 2)
+
+;; GEISER
+(setq-default geiser-active-implementations '(guile))
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
