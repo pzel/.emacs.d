@@ -4,10 +4,10 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode/"))
 ;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
 
-;; Marmalade packages
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 ;; LINUX/MAC OS X specific
@@ -18,11 +18,10 @@
     (turn-on-pbcopy)
     (setq-default os-open-command "open")
   ))
- ((and (equal (system-name) "kos")
-       (string-equal system-type "gnu/linux"))
+ ((string-equal system-type "gnu/linux")
   (progn
-    ;;(require 'xclip)
-    ;;(turn-on-xclip)
+    (require 'xclip)
+    (turn-on-xclip)
     (setq-default os-open-command "xdg-open"))))
 
 ;; TRAMP
@@ -186,6 +185,13 @@
 	    (setq-default indent-tabs-mode t)
 	    (setq-default tab-width 8)))
 
+
+;;; EasyPG: GPG support (decrypt in buffer; save encrypted)
+(require 'epa-file)
+(epa-file-enable)
+(setq epa-armor t) ; use ASCII armored encryption
+(custom-set-variables '(epa-file-name-regexp "\\.\\(asc\\|gpg\\|gpg~\\|asc~\\)\\'"))
+
 ;; BUFFERS ;;
 (require 'uniquify)
 (setq-default uniquify-buffer-name-style 'forward)
@@ -248,7 +254,7 @@
    (lambda(name)
      (message name)
      (let ((process-connection-type nil))
-     (start-process "" nil "/usr/local/bin/open_in_current_browser" name)))))
+     (start-process "" nil "xdg-open" name)))))
 
 (defun w3m-dump-at-point ()
   (interactive)
@@ -352,6 +358,7 @@
 (global-set-key (kbd "C-c u") 'browse-url-at-point)
 (global-set-key (kbd "C-c U") 'w3m-dump-at-point)
 (global-set-key (kbd "C-x |") 'toggle-window-split)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
