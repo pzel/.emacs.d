@@ -22,7 +22,7 @@
   (progn
     (require 'xclip)
     (turn-on-xclip)
-    (setq-default os-open-command "xdg-open"))))
+    (setq-default os-open-command "exo-open"))))
 
 ;; TRAMP
 (require 'tramp)
@@ -56,10 +56,10 @@
 ;;    (set-face-attribute 'default nil :font "PerfectDos" :height 120)
 ;;    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 105)
 ;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
-    (set-face-attribute 'default nil :font "Iosevka CC" :height 106)
+    (set-face-attribute 'default nil :font "Iosevka CC" :height 142)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "8x13bold")
-    (set-frame-size (selected-frame) 130 25)
+    (set-frame-size (selected-frame) 100 25)
     (fringe-mode '(1 . 1))
     (color-theme-initialize)
     (load-file "~/.emacs.d/lisp/minimal-light-theme.el")
@@ -102,6 +102,15 @@
 ;; Unicode shortcuts with M-p
 ;;(load "macrons.el")
 
+;; JAPANESE INPUT
+(set-fontset-font "fontset-default"
+                  'japanese-jisx0208
+                  (font-spec :family "Meiryo" :size 16))
+(global-set-key (kbd "C-x C-j") 'skk-mode)
+
+;; PROJECTILE
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
 
 ;;ERLANG
 (setq load-path (cons  "~/erlang/lib/tools-2.6.14/emacs/" load-path))
@@ -119,8 +128,8 @@
 (add-hook 'erlang-shell-mode-hook
           (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
 (require 'erlang-start)
-(setq-default erlang-indent-level 2)
-(setq-default erlang-indent-level 4)
+;(setq-default erlang-indent-level 2)
+;(setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 
 (require 'slim-erlang)
@@ -191,6 +200,8 @@
 (epa-file-enable)
 (setq epa-armor t) ; use ASCII armored encryption
 (custom-set-variables '(epa-file-name-regexp "\\.\\(asc\\|gpg\\|gpg~\\|asc~\\)\\'"))
+(setq epg-gpg-program "/usr/bin/gpg2")
+(setq epa-file-select-keys nil)
 
 ;; BUFFERS ;;
 (require 'uniquify)
@@ -254,7 +265,7 @@
    (lambda(name)
      (message name)
      (let ((process-connection-type nil))
-     (start-process "" nil "xdg-open" name)))))
+     (start-process "" nil "exo-open" name)))))
 
 (defun w3m-dump-at-point ()
   (interactive)
@@ -334,7 +345,12 @@
 (global-unset-key (kbd "C-r"))
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-o"))
+(global-unset-key (kbd "<f1>"))
+(global-unset-key (kbd "<f2>"))
 
+(global-set-key (kbd "<f1>") 'top-level)
+(global-set-key (kbd "<f2>") 'save-buffer)
+(global-set-key (kbd "<f5>") 'revert-buffer)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-+") 'text-scale-increase)
@@ -373,3 +389,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'downcase-region 'disabled nil)
