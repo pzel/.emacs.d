@@ -10,6 +10,9 @@
 ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (package-initialize)
 
+;; My custom globals
+(defvar global-font-height 142)
+
 ;; LINUX/MAC OS X specific
 (cond
  ((string-equal system-type "darwin")
@@ -56,7 +59,7 @@
 ;;    (set-face-attribute 'default nil :font "PerfectDos" :height 120)
 ;;    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 105)
 ;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
-    (set-face-attribute 'default nil :font "Iosevka CC" :height 142)
+    (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
 ;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
 ;;    (set-face-attribute 'default nil :font "8x13bold")
     (set-frame-size (selected-frame) 100 25)
@@ -80,7 +83,7 @@
     ;; (add-to-list 'default-frame-alist '(background-color . "#0A4B08"))
     ;; (add-to-list 'default-frame-alist '(foreground-color . "green3"))
 
-    (setq ispell-program-name "/usr/local/bin/ispell")
+    (setq ispell-program-name "/usr/bin/aspell")
     (setq ispell-list-command "list")
     (fringe-mode '(1 . 1))
     'mac-os-detected
@@ -335,6 +338,24 @@
   (pop-to-buffer "*Shell Command Output*")
   (setq truncate-lines t))
 
+(defun refresh-buffer ()
+  "Reload file-local variables"
+  (interactive)
+  (let ((v major-mode))
+    (normal-mode)
+    (funcall v)))
+
+(defun global-font-size-bigger ()
+  (interactive)
+  (setq global-font-height (+ global-font-height 10))
+  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height))
+
+(defun global-font-size-smaller ()
+  (interactive)
+  (setq global-font-height (- global-font-height 10))
+  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height))
+
+
 ;; keybindings
 (global-unset-key (kbd "C-x C-z"))
 (global-unset-key (kbd "C-x C-b"))
@@ -350,11 +371,11 @@
 
 (global-set-key (kbd "<f1>") 'top-level)
 (global-set-key (kbd "<f2>") 'save-buffer)
-(global-set-key (kbd "<f5>") 'revert-buffer)
+(global-set-key (kbd "<f5>") 'refresh-buffer)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-+") 'global-font-size-bigger)
+(global-set-key (kbd "C--") 'global-font-size-smaller)
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
