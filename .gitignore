@@ -5,6 +5,7 @@ bin/
 elpa/
 eshell/
 games/
+projectile.cache
 projectile-bookmarks.eld
 thumbs/
 tramp
