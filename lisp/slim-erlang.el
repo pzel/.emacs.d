@@ -15,9 +15,9 @@ start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 init([]) ->
-    AChild = {'AName', {'AModule', start_link, []},
+    ListOfArgs = [],
+    AChild = {'AName', {'AModule', start_link, ListOfArgs},
               permanent, 2000, worker, ['AModule']},
-
     {ok, { {one_for_all, 0, 1}, 
          [AChild]}}."
    n))
