@@ -2,34 +2,16 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode/"))
-;;(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-themes/"))
-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 ;; My custom globals
 (defvar global-font-height 142)
 
-;; LINUX/MAC OS X specific
-(cond
- ((string-equal system-type "darwin")
-  (progn
-    (require 'pbcopy)
-    (turn-on-pbcopy)
-    (setq-default os-open-command "open")
-  ))
- ((string-equal system-type "gnu/linux")
-  (progn
-    ;(require 'xclip)
-    ;(turn-on-xclip)
-    (setq-default os-open-command "exo-open"))))
-
 ;; TRAMP
-(require 'tramp)
-(setq tramp-default-method "ssh")
+;;(require 'tramp)
+;; (setq tramp-default-method "ssh")
 
 ;; LOOK-N-FEEL ;;
 (ffap-bindings)
@@ -48,58 +30,29 @@
 (setq-default Buffer-menu-mode-width 10)
 (setq-default Buffer-menu-size-width 10)
 
-(cond
- ((eq (symbol-value 'window-system) 'x)
-    (progn
-      (setq-default scroll-bar-mode-explicit t)
-      (scroll-bar-mode -1)
-      (tool-bar-mode -1)
-      (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-      (set-face-background 'trailing-whitespace "IndianRed1")
-;;    (set-face-attribute 'default nil :font "PerfectDos" :height 120)
-;;    (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 105)
-;;    (set-face-attribute 'default nil :font "Noto Sans Mono CJK JP" :height 102)
-    (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
-;;    (set-face-attribute 'default nil :font "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*")
-;;    (set-face-attribute 'default nil :font "8x13bold")
-    (set-frame-size (selected-frame) 100 25)
-    (fringe-mode '(1 . 1))
-    (color-theme-initialize)
-    (load-file "~/.emacs.d/lisp/minimal-light-theme.el")
-    'xorg-detected
-    ))
- ((eq (symbol-value 'window-system) 'ns)
-  (progn
-    (setq-default scroll-bar-mode-explicit t)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (menu-bar-mode 1)
-    (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-    (set-face-attribute 'default nil :font "Menlo" :height 140)
-    (set-face-background 'trailing-whitespace "IndianRed1")
-    (setq ring-bell-function #'ignore)
-
-    ;; light green-on-dark green
-    ;; (add-to-list 'default-frame-alist '(background-color . "#0A4B08"))
-    ;; (add-to-list 'default-frame-alist '(foreground-color . "green3"))
-
-    (setq ispell-program-name "/usr/bin/aspell")
-    (setq ispell-list-command "list")
-    (fringe-mode '(1 . 1))
-    'mac-os-detected
-    ))
- (t ;; We're running in a terminal
-  (progn
-    (require 'mouse)
-    (xterm-mouse-mode t)
-    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defun track-mouse (e))
-    'terminal-detected)))
+(progn
+  (setq-default scroll-bar-mode-explicit t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+  (set-face-background 'trailing-whitespace "IndianRed1")
+  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
+  (set-frame-size (selected-frame) 100 25)
+  (fringe-mode '(1 . 1))
+  (color-theme-initialize)
+  (load-library "~/.emacs.d/lisp/minimal-light-theme")
+  (setq-default os-open-command "exo-open")
+  (if (eq (symbol-value 'window-system) nil)
+      (progn
+;;        (require 'mouse)
+;;        (xterm-mouse-mode t)
+;;        (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+;;        (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+;;        (defun track-mouse (e)))))
+        )))
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
-(put 'upcase-region 'disabled nil)
 (windmove-default-keybindings)
 
 ;; Unicode shortcuts with M-p
@@ -109,7 +62,7 @@
 (set-fontset-font "fontset-default"
                   'japanese-jisx0208
                   (font-spec :family "Meiryo" :size 16))
-(global-set-key (kbd "C-x C-j") 'skk-mode)
+;;(global-set-key (kbd "C-x C-j") 'skk-mode)
 
 ;; WEB MODE
 (setq-default web-mode-markup-indent-offset 2)
@@ -126,20 +79,12 @@
 (setq erlang-man-root-dir "~/erlang/man")
 (setq exec-path (append (list "/usr/local/bin" "~/erlang/bin") exec-path))
 (add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
-
 (condition-case nil (require 'wrangler) (error nil))
 
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(defun inf-ctl-g ()
-  (interactive)
-  (comint-send-string (current-buffer) (make-string 1 ?\C-g)))
-(add-hook 'erlang-shell-mode-hook
-          (lambda () (define-key erlang-shell-mode-map (kbd "C-c g") 'inf-ctl-g)))
 (require 'erlang-start)
-;(setq-default erlang-indent-level 2)
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
-
 (require 'slim-erlang)
 
 ;; Sane regular expressions
@@ -153,12 +98,9 @@
 (add-hook 'haskell-mode-hook 'enable-old-haskell-indent)
 (setq-default haskell-indent-offset 2)
 
-;; GEISER
-(setq-default geiser-active-implementations '(guile))
-
 ;; EasyPG: GPG support (decrypt in buffer; save encrypted)
 (require 'epa-file)
-(load-library "armor-mode.el")
+(load-library "armor-mode")
 (epa-file-enable)
 (setq epg-gpg-program "/usr/bin/gpg2")
 (setq epa-file-name-regexp "\\.\\(gpg\\|\\asc\\)\\(~\\|\\.~[0-9]+~\\)?\\'")
@@ -231,35 +173,10 @@
 	    (setq-default indent-tabs-mode t)
 	    (setq-default tab-width 8)))
 
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;; '(epa-file-name-regexp "\\.\\(asc\\|gpg\\|gpg~\\|asc~\\)\\'")
- '(custom-safe-themes
-   (quote
-    ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
- '(safe-local-variable-values
-   (quote
-    ((web-mode-engines-alist quote
-                             (("django" . "\\.html\\'")))))))
-
-;; BUFFERS ;;
-(require 'uniquify)
-(setq-default uniquify-buffer-name-style 'forward)
-(put 'dired-find-alternate-file 'disabled nil)
-
-
 (setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
 (setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
-
-(load "server")
-(unless (server-running-p) (server-start))
 
 ;; ;; Abbrevs
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
@@ -311,10 +228,6 @@
      (let ((process-connection-type nil))
      (start-process "" nil "exo-open" name)))))
 
-(defun search-all-buffers (expr)
-  (interactive "sSearch all buffers for: ")
-  (multi-occur-in-matching-buffers ".*" expr))
-
 (defun ffap-at-mouse-other-window (e)
   (interactive "e")
   (let ((guess
@@ -340,33 +253,6 @@
         nil))				; no fallback, return nil
      ;; failure: return nil
      )))
-
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
-
-;(setq browse-url-browser-function 'w3m-browse-url)
 
 (defun dump-url (url &rest ignore)
   "Dump URL using w3m."
@@ -425,7 +311,6 @@
 (global-set-key (kbd "M-2") 'shell2)
 (global-set-key (kbd "M-3") 'shell3)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-c s") 'search-all-buffers)
 (global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
 (global-set-key (kbd "C-c m") 'erlang-man-module)
@@ -434,10 +319,17 @@
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
-(put 'downcase-region 'disabled nil)
+ ;; '(epa-file-name-regexp "\\.\\(asc\\|gpg\\|gpg~\\|asc~\\)\\'")
+ '(custom-safe-themes
+   (quote
+    ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
+ '(safe-local-variable-values
+   (quote
+    ((web-mode-engines-alist quote
+                             (("django" . "\\.html\\'")))))))
+

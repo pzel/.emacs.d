@@ -94,7 +94,7 @@
 
 
 ;; Local Variables:
-;; no-byte-compile: t
+;; ----no-byte-compile: t
 ;; End:    
 
 ;;; minimal-light-theme.el ends here
