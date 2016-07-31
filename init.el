@@ -1,7 +1,6 @@
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode/"))
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -30,26 +29,26 @@
 (setq-default Buffer-menu-mode-width 10)
 (setq-default Buffer-menu-size-width 10)
 
-(progn
-  (setq-default scroll-bar-mode-explicit t)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (setq-default mouse-autoselect-window t) ;focus-follows-mouse
-  (set-face-background 'trailing-whitespace "IndianRed1")
-  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
-  (set-frame-size (selected-frame) 100 25)
-  (fringe-mode '(1 . 1))
-  (color-theme-initialize)
-  (load-library "~/.emacs.d/lisp/minimal-light-theme")
-  (setq-default os-open-command "exo-open")
-  (if (eq (symbol-value 'window-system) nil)
+
+(if (eq (symbol-value 'window-system) nil)
       (progn
-;;        (require 'mouse)
-;;        (xterm-mouse-mode t)
-;;        (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-;;        (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-;;        (defun track-mouse (e)))))
-        )))
+        (require 'mouse)
+        (xterm-mouse-mode t)
+        (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+        (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+        (defun track-mouse (e)))
+  (progn
+    (setq-default scroll-bar-mode-explicit t)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+    (set-face-background 'trailing-whitespace "IndianRed1")
+    (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
+    (set-frame-size (selected-frame) 100 25)
+    (fringe-mode '(1 . 1))
+    (color-theme-initialize)
+    (load-library "~/.emacs.d/lisp/minimal-light-theme")
+    (setq-default os-open-command "exo-open")))
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -74,15 +73,14 @@
 (setq projectile-completion-system 'grizzl)
 
 ;;ERLANG
-(setq load-path (cons  "~/erlang/lib/tools-2.6.14/emacs/" load-path))
-(setq erlang-root-dir "~/erlang/")
-(setq erlang-man-root-dir "~/erlang/man")
-(setq exec-path (append (list "/usr/local/bin" "~/erlang/bin") exec-path))
-(add-to-list 'load-path "~/erlang/lib/wrangler-1.1.01/elisp")
+(add-to-list 'load-path "~/.erlangs/default/lib/wrangler-1.2.0/elisp")
 (condition-case nil (require 'wrangler) (error nil))
 
-(add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
+(setq load-path (cons "~/.erlangs/default/lib/tools-2.7.2/emacs" load-path))
+(setq erlang-root-dir "~/.erlangs/default")
+(setq exec-path (cons "~/.erlangs/default/bin" exec-path))
 (require 'erlang-start)
+(add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 (require 'slim-erlang)
@@ -113,6 +111,19 @@
 (global-set-key (kbd "M-o a") 'org-agenda)
 (global-set-key (kbd "M-o c") 'org-capture)
 (global-set-key (kbd "M-o b") 'org-iswitchb)
+(global-set-key (kbd "M-o p") 'org-present)
+
+;; ORG-PRESENT
+(autoload 'org-present "org-present" nil t)
+(eval-after-load "org-present"
+  '(progn
+     (add-hook 'org-present-mode-hook
+               (lambda ()
+                 (org-display-inline-images)))
+     (add-hook 'org-present-mode-quit-hook
+               (lambda ()
+                 (org-remove-inline-images)))))
+
 
 ;; LANGUAGE MODES
 (mapcar (lambda (pair)
