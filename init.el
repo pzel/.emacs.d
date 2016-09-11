@@ -1,8 +1,9 @@
 ;; PATHS
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 ;; My custom globals
@@ -43,12 +44,12 @@
     (tool-bar-mode -1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
     (set-face-background 'trailing-whitespace "IndianRed1")
-    (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height)
+    (set-face-attribute 'default nil :font "Iosevka Term" :height global-font-height)
     (set-frame-size (selected-frame) 100 25)
     (fringe-mode '(1 . 1))
     (color-theme-initialize)
     (load-library "~/.emacs.d/lisp/minimal-light-theme")
-    (setq-default os-open-command "exo-open")))
+    (setq-default os-open-command "xdg-open")))
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -60,7 +61,7 @@
 ;; JAPANESE INPUT
 (set-fontset-font "fontset-default"
                   'japanese-jisx0208
-                  (font-spec :family "Meiryo" :size 16))
+                  (font-spec :family "Meiryo"));; :size 24))
 ;;(global-set-key (kbd "C-x C-j") 'skk-mode)
 
 ;; WEB MODE
@@ -73,12 +74,13 @@
 (setq projectile-completion-system 'grizzl)
 
 ;;ERLANG
-(add-to-list 'load-path "~/.erlangs/default/lib/wrangler-1.2.0/elisp")
-(condition-case nil (require 'wrangler) (error nil))
+;; (add-to-list 'load-path "~/.erlangs/default/lib/wrangler-1.2.0/elisp")
+;; (condition-case nil (require 'wrangler) (error nil))
 
-(setq load-path (cons "~/.erlangs/default/lib/tools-2.7.2/emacs" load-path))
-(setq erlang-root-dir "~/.erlangs/default")
-(setq exec-path (cons "~/.erlangs/default/bin" exec-path))
+;; (setq load-path (cons "~/.erlangs/default/lib/tools-2.7.2/emacs" load-path))
+;; (setq erlang-root-dir "~/.erlangs/default")
+;; (setq exec-path (cons "~/.erlangs/default/bin" exec-path))
+
 (require 'erlang-start)
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (setq-default erlang-indent-level 4)
@@ -289,6 +291,8 @@
   (setq global-font-height (- global-font-height 10))
   (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height))
 
+;; EVIL MODE
+(global-set-key (kbd "<f4>") 'evil-mode)
 
 ;; keybindings
 (global-unset-key (kbd "C-x C-z"))
@@ -344,3 +348,4 @@
     ((web-mode-engines-alist quote
                              (("django" . "\\.html\\'")))))))
 
+(put 'downcase-region 'disabled nil)
