@@ -7,7 +7,8 @@
 (package-initialize)
 
 ;; My custom globals
-(defvar global-font-height 142)
+(defvar global-font-height 152)
+(defvar global-font-face "Iosevka Term") ;Iosevka Term")
 
 ;; TRAMP
 ;;(require 'tramp)
@@ -29,6 +30,8 @@
 (setq-default Buffer-menu-name-width 35)
 (setq-default Buffer-menu-mode-width 10)
 (setq-default Buffer-menu-size-width 10)
+(setq-default display-buffer-alist '(("*shell-?*" (display-buffer-reuse-window 
+                                                   display-buffer-same-window))))
 
 
 (if (eq (symbol-value 'window-system) nil)
@@ -44,7 +47,7 @@
     (tool-bar-mode -1)
     (setq-default mouse-autoselect-window t) ;focus-follows-mouse
     (set-face-background 'trailing-whitespace "IndianRed1")
-    (set-face-attribute 'default nil :font "Iosevka Term" :height global-font-height)
+    (set-face-attribute 'default nil :font global-font-face :height global-font-height)
     (set-frame-size (selected-frame) 100 25)
     (fringe-mode '(1 . 1))
     (color-theme-initialize)
@@ -284,12 +287,12 @@
 (defun global-font-size-bigger ()
   (interactive)
   (setq global-font-height (+ global-font-height 10))
-  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height))
+  (set-face-attribute 'default nil :font global-font-face :height global-font-height))
 
 (defun global-font-size-smaller ()
   (interactive)
   (setq global-font-height (- global-font-height 10))
-  (set-face-attribute 'default nil :font "Iosevka CC" :height global-font-height))
+  (set-face-attribute 'default nil :font global-font-face :height global-font-height))
 
 ;; EVIL MODE
 (global-set-key (kbd "<f4>") 'evil-mode)
@@ -349,3 +352,4 @@
                              (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
