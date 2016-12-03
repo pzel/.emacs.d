@@ -1,4 +1,5 @@
 ;; PATHS
+(require 'cl-lib)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
@@ -36,6 +37,7 @@
 
 (if (eq (symbol-value 'window-system) nil)
       (progn
+        (require 'xclip)
         (require 'mouse)
         (xterm-mouse-mode t)
         (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
@@ -103,7 +105,7 @@
 
 ;; EasyPG: GPG support (decrypt in buffer; save encrypted)
 (require 'epa-file)
-(load-library "armor-mode")
+(load "armor-mode")
 (epa-file-enable)
 (setq epg-gpg-program "/usr/bin/gpg2")
 (setq epa-file-name-regexp "\\.\\(gpg\\|\\asc\\)\\(~\\|\\.~[0-9]+~\\)?\\'")
@@ -111,6 +113,7 @@
 (setq epa-file-select-keys nil)
 
 ;; ORG MODE
+(setq org-startup-truncated nil)
 (global-unset-key (kbd "M-o"))
 (global-set-key (kbd "M-o l") 'org-store-link)
 (global-set-key (kbd "M-o a") 'org-agenda)
@@ -147,7 +150,6 @@
 
 	  ("\\.org\\.gpg$" . org-mode)
 	  ("\\.org\\.gpg\\.asc$" . org-mode)
-    ("\\.asc$" . auto-encryption-armored-mode)
 
 	  ("Gemfile$" . ruby-mode)
 	  ("Rakefile$" . ruby-mode)
@@ -194,7 +196,13 @@
 (setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
 
-;; ;; Abbrevs
+;; Reloading minor modes
+(defun active-minor-modes ()
+  (interactive)
+  (cl-remove-if-not 
+   (lambda(x) (and x))
+   (mapcar (lambda(m) (and (boundp m) (symbol-value m) m)) minor-mode-list)))
+
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 ;; (setq save-abbrevs t)
 ;; (quietly-read-abbrev-file)
@@ -280,9 +288,11 @@
 (defun refresh-buffer ()
   "Reload file-local variables"
   (interactive)
-  (let ((v major-mode))
+  (let ((v major-mode)
+        (mm (active-minor-modes)))
     (normal-mode)
-    (funcall v)))
+    (funcall v)
+    (mapcar 'funcall mm)))
 
 (defun global-font-size-bigger ()
   (interactive)
@@ -342,10 +352,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;; '(epa-file-name-regexp "\\.\\(asc\\|gpg\\|gpg~\\|asc~\\)\\'")
  '(custom-safe-themes
    (quote
     ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
+ '(package-selected-packages
+   (quote
+    (lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((web-mode-engines-alist quote
@@ -353,3 +365,9 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
