@@ -8,7 +8,7 @@
 (package-initialize)
 
 ;; My custom globals
-(defvar global-font-height 152)
+(defvar global-font-height 132)
 (defvar global-font-face "Iosevka Term") ;Iosevka Term")
 
 (global-set-key (kbd "<f4>") 'evil-mode)
@@ -39,9 +39,9 @@
 (setq-default Buffer-menu-name-width 35)
 (setq-default Buffer-menu-mode-width 10)
 (setq-default Buffer-menu-size-width 10)
-(setq-default display-buffer-alist '(("*shell-?*" (display-buffer-reuse-window 
-                                                   display-buffer-same-window))))
-
+(setq-default display-buffer-alist 
+              '(("*shell-?*" (display-buffer-reuse-window
+                              display-buffer-same-window))))
 
 (if (eq (symbol-value 'window-system) nil)
       (progn
@@ -77,6 +77,14 @@
 ;;                  (font-spec :family "Meiryo"));; :size 24))
 ;;(global-set-key (kbd "C-x C-j") 'skk-mode)
 
+;; W3M Browser
+(setq w3m-coding-system 'utf-8
+      w3m-file-coding-system 'utf-8
+      w3m-file-name-coding-system 'utf-8
+      w3m-input-coding-system 'utf-8
+      w3m-output-coding-system 'utf-8
+      w3m-terminal-coding-system 'utf-8)
+
 ;; WEB MODE
 (setq-default web-mode-markup-indent-offset 2)
 (setq-default web-mode-css-indent-offset 2)
@@ -99,6 +107,11 @@
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 (require 'slim-erlang)
+
+;; FACTOR
+(require 'factor-mode)
+(setq fuel-listener-factor-binary "/opt/factor/factor")
+(setq fuel-listener-factor-image  "/opt/factor/factor.image")
 
 ;; Sane regular expressions
 (require 're-builder)
@@ -139,18 +152,21 @@
      (add-hook 'org-present-mode-quit-hook
                (lambda ()
                  (org-remove-inline-images)))))
-
+;; ISPELL
+(setq ispell-program-name "/usr/bin/hunspell")
 
 ;; LANGUAGE MODES
+(setq utop-command "opam config exec -- utop -emacs")
+
 (mapcar (lambda (pair)
 	  (add-to-list 'auto-mode-alist pair))
-	'(	  
+	'(
     (".spec$" . erlang-mode)
 	  ("rebar.config$" . erlang-mode)
 	  ("reltool.config$" . erlang-mode)
 	  (".app.src$" . erlang-mode)
 
-	  (".pde$" . java-mode)    
+	  (".pde$" . java-mode)
 
     ("\\.sxml$" . scheme-mode)
 	  (".sld$" . scheme-mode)
@@ -207,7 +223,7 @@
 ;; Reloading minor modes
 (defun active-minor-modes ()
   (interactive)
-  (cl-remove-if-not 
+  (cl-remove-if-not
    (lambda(x) (and x))
    (mapcar (lambda(m) (and (boundp m) (symbol-value m) m)) minor-mode-list)))
 
@@ -218,9 +234,19 @@
 ;; M-x shell tweaks
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
+(add-hook 
+ 'comint-mode-hook 
+ (lambda () (global-unset-key (kbd "C-x C-x"))))
 (setenv "NODE_NO_READLINE" "1")
-(setenv "EDITOR" "ema")
+(setenv "EDITOR" "emx")
 (setenv "PAGER" "cat")
+
+(defun server-start-here ()
+  (interactive)
+  (ignore-errors (server-force-delete))
+  (server-start)
+  "Server started here")
+(server-start-here)
 
 (defun shell-run (name)
   (interactive)
@@ -314,43 +340,44 @@
 
 
 ;; keybindings
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key (kbd "C-x C-b"))
-(global-unset-key (kbd "C-x m"))
-(global-unset-key (kbd "C-x C-p"))
-(global-unset-key (kbd "C-x C-r"))
-(global-unset-key (kbd "C-s"))
-(global-unset-key (kbd "C-r"))
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
+(global-unset-key (kbd "C-o"))
+(global-unset-key (kbd "C-r"))
+(global-unset-key (kbd "C-s"))
+(global-unset-key (kbd "C-x C-b"))
+(global-unset-key (kbd "C-x C-p"))
+(global-unset-key (kbd "C-x C-r"))
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key (kbd "C-x m"))
+(global-unset-key (kbd "C-z"))
 
+(global-set-key "\M-g" 'goto-line)
 (global-set-key (kbd "<f1>") 'top-level)
 (global-set-key (kbd "<f2>") 'save-buffer)
 (global-set-key (kbd "<f5>") 'refresh-buffer)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-+") 'global-font-size-bigger)
 (global-set-key (kbd "C--") 'global-font-size-smaller)
-(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
-(global-set-key (kbd "C-x C-r") 'ffap-other-window)
-(global-set-key [mouse-3] 'ffap-at-mouse-other-window)
-(global-set-key (kbd "M-`") 'other-window)
-(global-set-key (kbd "C-o C-o") 'other-window)
 (global-set-key (kbd "C-<tab>") 'other-window)
-(global-set-key "\M-g" 'goto-line)
-(global-set-key (kbd "M-RET") 'shell1)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
+(global-set-key (kbd "C-c U") 'w3m-dump-at-point)
+(global-set-key (kbd "C-c m") 'erlang-man-module)
+(global-set-key (kbd "C-c u") 'browse-url-at-point)
+(global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
+(global-set-key (kbd "C-o C-o") 'other-window)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
+(global-set-key (kbd "C-x C-m") 'compile)
+(global-set-key (kbd "C-x C-r") 'ffap-other-window)
+(global-set-key (kbd "C-x |") 'toggle-window-split)
 (global-set-key (kbd "M-1") 'shell1)
 (global-set-key (kbd "M-2") 'shell2)
 (global-set-key (kbd "M-3") 'shell3)
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
-(global-set-key (kbd "C-c m") 'erlang-man-module)
-(global-set-key (kbd "C-c u") 'browse-url-at-point)
-(global-set-key (kbd "C-c U") 'w3m-dump-at-point)
-(global-set-key (kbd "C-x |") 'toggle-window-split)
+(global-set-key (kbd "M-RET") 'shell1)
+(global-set-key (kbd "M-`") 'other-window)
+(global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 
 
 (custom-set-variables
@@ -363,7 +390,7 @@
     ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
  '(package-selected-packages
    (quote
-    (fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (roguel-ike w3m twittering-mode fuel utop elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((web-mode-engines-alist quote
