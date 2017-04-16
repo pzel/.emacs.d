@@ -7,6 +7,10 @@
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
+;; Authinfo
+(setq auth-sources '("~/.authinfo.gpg"))
+
+
 ;; My custom globals
 (defvar global-font-height 132)
 (defvar global-font-face "Iosevka Term") ;Iosevka Term")
