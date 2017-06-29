@@ -112,11 +112,6 @@
 (setq-default erlang-electric-commands '())
 (require 'slim-erlang)
 
-;; FACTOR
-(require 'factor-mode)
-(setq fuel-listener-factor-binary "/opt/factor/factor")
-(setq fuel-listener-factor-image  "/opt/factor/factor.image")
-
 ;; Sane regular expressions
 (require 're-builder)
 (setq reb-re-syntax 'string)
@@ -205,10 +200,10 @@
 (setq-default js-indent-level 2)
 
 ;; Show trailing whitespace in the following modes:
-(mapcar (lambda (mode)
-          (add-hook mode (lambda ()
-                           (setq show-trailing-whitespace 1))))
-        '(erlang-mode-hook haskell-mode-hook makefile-mode-hook))
+;; (mapcar (lambda (mode)
+;;           (add-hook mode (lambda ()
+;;                            (setq show-trailing-whitespace 1))))
+;;         '(erlang-mode-hook haskell-mode-hook makefile-mode-hook))
 
 ;; Clean trailing whitespace before saving
 ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -402,9 +397,3 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
