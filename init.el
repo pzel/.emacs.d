@@ -1,5 +1,6 @@
 ;; PATHS
 (require 'cl-lib)
+(add-to-list 'Info-default-directory-list "~/.emacs.d/info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
@@ -65,7 +66,7 @@
     (set-frame-size (selected-frame) 100 25)
     (fringe-mode '(1 . 1))
     (color-theme-initialize)
-    (load-library "~/.emacs.d/lisp/minimal-light-theme")
+    (load-theme 'commentary t)
     (setq-default os-open-command "xdg-open")))
 
 ;; INPUT & CONTROL
@@ -87,12 +88,30 @@
       w3m-file-name-coding-system 'utf-8
       w3m-input-coding-system 'utf-8
       w3m-output-coding-system 'utf-8
-      w3m-terminal-coding-system 'utf-8)
+      w3m-terminal-coding-system 'utf-8
+      w3m-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36")
+(setq browse-url-browser-function 'w3m-browse-url)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+;; (global-set-key "\C-xm" 'browse-url-at-point)
+
+;; https://gist.github.com/venmos-zz/6190816
+(setq w3m-search-default-engine "DuckDuck Go")
+(setq w3m-search-engine-alist '())
+(add-to-list 'w3m-search-engine-alist
+  	'("DuckDuck Go" "http://www.duckduckgo.com/html?q=%s"))
+
+(defadvice w3m-search (after change-default activate)
+  (let ((engine (nth 1 minibuffer-history)))
+    (when (assoc engine w3m-search-engine-alist)
+      (setq w3m-search-default-engine engine))))
 
 ;; WEB MODE
 (setq-default web-mode-markup-indent-offset 2)
 (setq-default web-mode-css-indent-offset 2)
 (setq-default web-mode-code-indent-offset 2)
+
+;; ELM
+(setq-default elm-indent-offset 2)
 
 ;; PROJECTILE
 (projectile-global-mode)
@@ -133,6 +152,12 @@
 (setq epa-file-select-keys nil)
 
 ;; ORG MODE
+(setq org-export-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq coding-system-for-read 'utf-8)
+(setq coding-system-for-write 'utf-8)
+(set-charset-priority 'unicode)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 (setq org-startup-truncated nil)
 (global-unset-key (kbd "M-o"))
 (global-set-key (kbd "M-o l") 'org-store-link)
@@ -160,28 +185,23 @@
 (mapcar (lambda (pair)
 	  (add-to-list 'auto-mode-alist pair))
 	'(
-    (".spec$" . erlang-mode)
+	  (".spec$" . erlang-mode)
 	  ("rebar.config$" . erlang-mode)
 	  ("reltool.config$" . erlang-mode)
 	  (".app.src$" . erlang-mode)
-
 	  (".pde$" . java-mode)
-
-    ("\\.sxml$" . scheme-mode)
+	  ("\\.sxml$" . scheme-mode)
 	  (".sld$" . scheme-mode)
 	  (".lfe$" . scheme-mode)
-
 	  ("\\.org\\.gpg$" . org-mode)
 	  ("\\.org\\.gpg\\.asc$" . org-mode)
-
 	  ("Gemfile$" . ruby-mode)
 	  ("Rakefile$" . ruby-mode)
-
-	  (".md$" . text-mode)
+	  (".md$" . markdown-mode)
 	  (".tab$" . text-mode)
-
-    ("\\.html?\\'" . web-mode)
-    ("\\.css?\\'" . web-mode)
+	  ("\\.html?\\'" . web-mode)
+	  ("\\.css?\\'" . web-mode)
+	  (".pug$" . javascript-mode)
     ))
 
 
@@ -370,6 +390,7 @@
 (global-set-key (kbd "C-x C-b") 'electric-buffer-list)
 (global-set-key (kbd "C-x C-m") 'compile)
 (global-set-key (kbd "C-x C-r") 'ffap-other-window)
+(global-set-key (kbd "C-x E") (kbd "C-u 1 C-x C-e")) ;; eval-into-buffer
 (global-set-key (kbd "C-x |") 'toggle-window-split)
 (global-set-key (kbd "M-1") 'shell1)
 (global-set-key (kbd "M-2") 'shell2)
@@ -386,14 +407,21 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
+    ("08fd3e64e02db1cf1b3dc79296df1e77e104f208ef897dc0c1b4e0112e1b50de" "5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
  '(package-selected-packages
    (quote
-    (roguel-ike w3m twittering-mode fuel utop elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (elm-mode roguel-ike w3m twittering-mode fuel utop elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
-    ((web-mode-engines-alist quote
+    ((encoding . utf-8)
+     (web-mode-engines-alist quote
                              (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
