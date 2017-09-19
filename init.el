@@ -14,7 +14,6 @@
 
 ;; My custom globals
 (defvar global-font-height 132)
-(defvar global-font-face "Iosevka Term") ;Iosevka Term")
 (defvar original-mode-line-format mode-line-format)
 
 (global-set-key (kbd "<f4>") 'evil-mode)
@@ -49,19 +48,15 @@
               '(("*shell-?*" (display-buffer-reuse-window
                               display-buffer-same-window))))
 
-(if (eq (symbol-value 'window-system) nil)
-      (progn
-        (require 'xclip)
-        (require 'mouse)
-        (xterm-mouse-mode t)
-        (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-        (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-        (defun track-mouse (e)))
+(cond
+ ((eq (symbol-value 'window-system) 'x)
   (progn
+    (defvar global-font-face "Iosevka Term")
+    (defvar global-shell-location "/bin/bash")
     (setq-default scroll-bar-mode-explicit t)
     (scroll-bar-mode -1)
     (tool-bar-mode -1)
-    (setq-default mouse-autoselect-window t) ;focus-follows-mouse
+    (setq-default mouse-autoselect-window t)
     (set-face-background 'trailing-whitespace "IndianRed1")
     (set-face-attribute 'default nil :font global-font-face :height global-font-height)
     (set-frame-size (selected-frame) 100 25)
@@ -69,6 +64,33 @@
     (color-theme-initialize)
     (load-theme 'commentary t)
     (setq-default os-open-command "xdg-open")))
+ ((eq (symbol-value 'window-system) 'ns)
+  (progn
+    (defvar global-font-face "Iosevka Term")
+    (defvar global-shell-location "/opt/pkg/bin/bash")
+    (setq-default scroll-bar-mode-explicit t)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (setq-default mouse-autoselect-window t)
+    (set-face-background 'trailing-whitespace "IndianRed1")
+    (set-face-attribute 'default nil :font global-font-face :height global-font-height)
+    (set-frame-size (selected-frame) 100 25)
+    (fringe-mode '(1 . 1))
+    (color-theme-initialize)
+    (load-theme 'commentary t)
+    (setq shell-command-switch "-lc")
+    (setq-default os-open-command "open")))
+ ((eq system-type 'darwin)  ;; We're running os x, in a terminal
+  (progn
+    (defvar global-shell-location "/opt/pkg/bin/bash")))
+ ((eq (symbol-value 'window-system) nil)
+  (progn
+    (require 'xclip)
+    (require 'mouse)
+    (xterm-mouse-mode t)
+    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+    (defun track-mouse (e)))))
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -310,6 +332,7 @@
 ;; (quietly-read-abbrev-file)
 
 ;; M-x shell tweaks
+(setq explicit-shell-file-name global-shell-location)
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
 (add-hook 
