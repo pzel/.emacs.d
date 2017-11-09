@@ -1,6 +1,6 @@
 ;; PATHS
 (require 'cl-lib)
-(add-to-list 'Info-default-directory-list "~/.emacs.d/info/")
+(add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
@@ -32,7 +32,7 @@
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
 (if (fboundp 'menu-bar-mode) (menu-bar-mode 0))
-(global-font-lock-mode 1)
+;(global-font-lock-mode 1)
 (set-face-underline-p 'underline nil)
 (column-number-mode t)
 (size-indication-mode t)
@@ -49,48 +49,53 @@
                               display-buffer-same-window))))
 
 (cond
- ((eq (symbol-value 'window-system) 'x)
-  (progn
-    (defvar global-font-face "Iosevka Term")
-    (defvar global-shell-location "/bin/bash")
-    (setq-default scroll-bar-mode-explicit t)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (setq-default mouse-autoselect-window t)
-    (set-face-background 'trailing-whitespace "IndianRed1")
-    (set-face-attribute 'default nil :font global-font-face :height global-font-height)
-    (set-frame-size (selected-frame) 100 25)
-    (fringe-mode '(1 . 1))
-    (color-theme-initialize)
-    (load-theme 'commentary t)
-    (setq-default os-open-command "xdg-open")))
- ((eq (symbol-value 'window-system) 'ns)
-  (progn
-    (defvar global-font-face "Iosevka Term")
-    (defvar global-shell-location "/opt/pkg/bin/bash")
-    (setq-default scroll-bar-mode-explicit t)
-    (scroll-bar-mode -1)
-    (tool-bar-mode -1)
-    (setq-default mouse-autoselect-window t)
-    (set-face-background 'trailing-whitespace "IndianRed1")
-    (set-face-attribute 'default nil :font global-font-face :height global-font-height)
-    (set-frame-size (selected-frame) 100 25)
-    (fringe-mode '(1 . 1))
-    (color-theme-initialize)
-    (load-theme 'commentary t)
-    (setq shell-command-switch "-lc")
-    (setq-default os-open-command "open")))
- ((eq system-type 'darwin)  ;; We're running os x, in a terminal
-  (progn
-    (defvar global-shell-location "/opt/pkg/bin/bash")))
- ((eq (symbol-value 'window-system) nil)
+ ((eq (symbol-value 'window-system) 'nil)
   (progn
     (require 'xclip)
     (require 'mouse)
+    ;;(color-theme-initialize)
+    ;;(color-theme-retro-orange) ;; set orange
+    (global-font-lock-mode 0)    ;; disable dynamic highlighting
     (xterm-mouse-mode t)
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defun track-mouse (e)))))
+    (defun track-mouse (e)))
+  ((eq (symbol-value 'window-system) 'x)
+   (progn
+     (defvar global-font-face "Iosevka Term")
+     (defvar global-shell-location "/bin/bash")
+     (setq-default scroll-bar-mode-explicit t)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+     (setq-default mouse-autoselect-window t)
+     (set-face-background 'trailing-whitespace "IndianRed1")
+     (set-face-attribute 'default nil 
+                         :font global-font-face 
+                         :height global-font-height)
+     (set-frame-size (selected-frame) 100 25)
+     (fringe-mode '(1 . 1))
+     (color-theme-initialize)
+     (load-theme 'commentary t)
+     (setq-default os-open-command "xdg-open")))
+  ((eq (symbol-value 'window-system) 'ns)
+   (progn
+     (defvar global-font-face "Iosevka Term")
+     (defvar global-shell-location "/opt/pkg/bin/bash")
+     (setq-default scroll-bar-mode-explicit t)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+     (setq-default mouse-autoselect-window t)
+     (set-face-background 'trailing-whitespace "IndianRed1")
+     (set-face-attribute 'default nil :font global-font-face :height global-font-height)
+     (set-frame-size (selected-frame) 100 25)
+     (fringe-mode '(1 . 1))
+     (color-theme-initialize)
+     (load-theme 'commentary t)
+     (setq shell-command-switch "-lc")
+     (setq-default os-open-command "open")))))
+(if (eq system-type 'darwin)  ;; We're running os x, in a terminal
+    (defvar global-shell-location "/opt/pkg/bin/bash"))
+
 
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -169,10 +174,10 @@
 ;; Ocaml stuff
 ;; -- Tuareg mode -----------------------------------------
 ;; Add Tuareg to your search path
-(require 'tuareg)
-(setq auto-mode-alist 
-      (append '(("\\.ml[ily]?$" . tuareg-mode))
-	      auto-mode-alist))
+;; (require 'tuareg)
+;; (setq auto-mode-alist 
+;;       (append '(("\\.ml[ily]?$" . tuareg-mode))
+;; 	      auto-mode-alist))
 
 ;; -- Tweaks for OS X -------------------------------------
 ;; Tweak for problem on OS X where Emacs.app doesn't run the right
@@ -184,21 +189,21 @@
 
 ;; -- opam and utop setup --------------------------------
 ;; Setup environment variables using opam
-(dolist
-   (var (car (read-from-string
-	       (shell-command-to-string "opam config env --sexp"))))
- (setenv (car var) (cadr var)))
+;; (dolist
+;;    (var (car (read-from-string
+;; 	       (shell-command-to-string "~/.local/bin/opam config env --sexp"))))
+;;  (setenv (car var) (cadr var)))
 
-(add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
-(setq auto-mode-alist
-      (append '(("\\.ml[ily]?$" . tuareg-mode)
-                ("\\.topml$" . tuareg-mode))
-              auto-mode-alist)) 
-(autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-(add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
-(add-hook 'tuareg-mode-hook 'merlin-mode)
-(setq merlin-use-auto-complete-mode t)
-(setq merlin-error-after-save nil)
+;; (add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+;; (setq auto-mode-alist
+;;       (append '(("\\.ml[ily]?$" . tuareg-mode)
+;;                 ("\\.topml$" . tuareg-mode))
+;;               auto-mode-alist)) 
+;; ;(autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
+;; (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
+;; (add-hook 'tuareg-mode-hook 'merlin-mode)
+;; (setq merlin-use-auto-complete-mode t)
+;; (setq merlin-error-after-save nil)
 
 ;; EasyPG: GPG support (decrypt in buffer; save encrypted)
 (require 'epa-file)
@@ -229,14 +234,15 @@
 
 (defun org-present-pzel-start-hook ()
   (interactive)
-  (setq global-font-height 362)
   (setq cursor-type 'bar)
-  (set-cursor-color "gray")
+  (setq global-font-height 232)
+  (set-cursor-color "Wheat")
   (fringe-mode '(0 . 0))
   (set-frame-parameter nil 'internal-border-width 40)
   (set-window-margins (get-buffer-window) 3)
   (set-face-attribute 'default nil :height global-font-height)
   (hide-global-modeline)
+  (org-present-big)
   (org-display-inline-images))
 
 (defun org-present-pzel-stop-hook ()
@@ -335,6 +341,8 @@
 (setq explicit-shell-file-name global-shell-location)
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
+(setq-default comint-eol-on-send nil)
+(setq-default comint-use-prompt-regexp t)
 (add-hook 
  'comint-mode-hook 
  (lambda () (global-unset-key (kbd "C-x C-x"))))
@@ -490,6 +498,11 @@
 (global-set-key [mouse-3] 'ffap-at-mouse-other-window)
 
 
+;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
+(eval-after-load "enriched"
+  '(defun enriched-decode-display-prop (start end &optional param)
+     (list start end)))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -500,7 +513,7 @@
     ("08fd3e64e02db1cf1b3dc79296df1e77e104f208ef897dc0c1b4e0112e1b50de" "5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
  '(package-selected-packages
    (quote
-    (elm-mode roguel-ike w3m twittering-mode fuel utop elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode web-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (scala-mode w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel utop elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode tuareg projectile org-present org-pomodoro ocp-indent merlin markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
