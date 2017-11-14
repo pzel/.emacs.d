@@ -49,7 +49,7 @@
                               display-buffer-same-window))))
 
 (cond
- ((eq (symbol-value 'window-system) 'nil)
+ ((eq window-system 'nil)
   (progn
     (require 'xclip)
     (require 'mouse)
@@ -59,8 +59,8 @@
     (xterm-mouse-mode t)
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defun track-mouse (e)))
-  ((eq (symbol-value 'window-system) 'x)
+    (defun track-mouse (e))))
+  ((eq window-system 'x)
    (progn
      (defvar global-font-face "Iosevka Term")
      (defvar global-shell-location "/bin/bash")
@@ -77,7 +77,7 @@
      (color-theme-initialize)
      (load-theme 'commentary t)
      (setq-default os-open-command "xdg-open")))
-  ((eq (symbol-value 'window-system) 'ns)
+  ((eq window-system 'ns)
    (progn
      (defvar global-font-face "Iosevka Term")
      (defvar global-shell-location "/opt/pkg/bin/bash")
@@ -92,7 +92,7 @@
      (color-theme-initialize)
      (load-theme 'commentary t)
      (setq shell-command-switch "-lc")
-     (setq-default os-open-command "open")))))
+     (setq-default os-open-command "open"))))
 (if (eq system-type 'darwin)  ;; We're running os x, in a terminal
     (defvar global-shell-location "/opt/pkg/bin/bash"))
 
@@ -330,7 +330,7 @@
 (defun active-minor-modes ()
   (interactive)
   (cl-remove-if-not
-   (lambda(x) (and x))
+   (lambda(x) (and x)) 
    (mapcar (lambda(m) (and (boundp m) (symbol-value m) m)) minor-mode-list)))
 
 ;; (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
@@ -343,12 +343,21 @@
 (setq-default comint-input-ignoredups t)
 (setq-default comint-eol-on-send nil)
 (setq-default comint-use-prompt-regexp t)
+(setq-default comint-prompt-regexp "")
+
 (add-hook 
  'comint-mode-hook 
- (lambda () (global-unset-key (kbd "C-x C-x"))))
+ (lambda () 
+   (define-key shell-mode-map (kbd "RET") 'shell-eol-and-insert)
+   (global-unset-key (kbd "C-x C-x"))))
 (setenv "NODE_NO_READLINE" "1")
 (setenv "EDITOR" "emx")
 (setenv "PAGER" "cat")
+
+(defun shell-eol-and-insert ()
+  (interactive)
+  (move-end-of-line nil)
+  (comint-send-input))
 
 (defun server-start-here ()
   (interactive)
