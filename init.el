@@ -59,7 +59,21 @@
     (xterm-mouse-mode t)
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defun track-mouse (e))))
+    (defun track-mouse (e))
+    (if (eq system-type 'darwin)  ;; We're running os x, in a terminal
+        (progn 
+          (defvar global-shell-location "/opt/pkg/bin/bash")
+          (defun copy-from-osx ()
+            "Use OSX clipboard to paste."
+            (shell-command-to-string "pbpaste"))
+          (defun paste-to-osx (text &optional push)
+            "Add kill ring entries (TEXT) to OSX clipboard.  PUSH."
+            (let ((process-connection-type nil))
+              (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+                (process-send-string proc text)
+                (process-send-eof proc))))
+          (setq interprogram-cut-function 'paste-to-osx)
+          (setq interprogram-paste-function 'copy-from-osx)))))
   ((eq window-system 'x)
    (progn
      (defvar global-font-face "Iosevka Term")
@@ -93,8 +107,6 @@
      (load-theme 'commentary t)
      (setq shell-command-switch "-lc")
      (setq-default os-open-command "open"))))
-(if (eq system-type 'darwin)  ;; We're running os x, in a terminal
-    (defvar global-shell-location "/opt/pkg/bin/bash"))
 
 
 ;; INPUT & CONTROL
