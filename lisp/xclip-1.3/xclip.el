@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(defcustom xclip-program "xclip"
+(defcustom xclip-program "/home/p/.local/bin/clip"
   "Name of the xclip program."
   :type 'string
   :group 'killing)
@@ -58,7 +58,6 @@ If non-nil `xclip-program' is ignored."
 
 (defun xclip-set-selection (type data)
   "TYPE is a symbol: primary, secondary and clipboard.
-
 See also `x-set-selection'."
   (let* ((process-connection-type nil)
          (proc (cond
@@ -136,43 +135,43 @@ See also `x-set-selection'."
             (signal 'file-error (list "Searching for program"
                                       xclip-program "no such file")))
         ;; NOTE: See `tty-run-terminal-initialization' and term/README
-        (add-hook 'terminal-init-xterm-hook 'turn-on-xclip))
-    (remove-hook 'terminal-init-xterm-hook 'turn-on-xclip)))
+        (turn-on-xclip))
+    (turn-off-xclip)))
 
 ;;;; ChangeLog:
 
 ;; 2013-09-06  Leo Liu  <sdl.web@gmail.com>
-;; 
+;;
 ;; 	* xclip.el: Fix last change
-;; 
+;;
 ;; 2013-09-06  Leo Liu  <sdl.web@gmail.com>
-;; 
+;;
 ;; 	* xclip.el: Use pbcopy and pbpaste if available
-;; 
+;;
 ;; 	(xclip-use-pbcopy&paste): New variable.
 ;; 	(xclip-set-selection, xclip-selection-value, xclip-mode): Use it.
-;; 
+;;
 ;; 2013-09-05  Leo Liu  <sdl.web@gmail.com>
-;; 
+;;
 ;; 	* xclip.el: Some cleanups and fix copyright years.
-;; 
+;;
 ;; 	(xclip-program, xclip-select-enable-clipboard): Use defcustom.
 ;; 	(xclip-select-text): Cleanup.
 ;; 	(turn-off-xclip): Remove.
 ;; 	(xclip-mode): Check xclip-program here.
-;; 
+;;
 ;; 2012-02-05  Stefan Monnier  <monnier@iro.umontreal.ca>
-;; 
+;;
 ;; 	* xclip.el: Better follow conventions. Fix up copyright notice.
 ;; 	(xclip-program): Make it work in the usual way.
 ;; 	(xclip-set-selection, xclip-selection-value): Obey xclip-program.
 ;; 	(turn-on-xclip, turn-off-xclip): Don't autoload, not interactive.
 ;; 	(xclip-mode): New minor mode to avoid enabling it unconditionally.
-;; 
+;;
 ;; 2012-02-05  Leo Liu  <sdl.web@gmail.com>
-;; 
+;;
 ;; 	Add xclip.el.
-;; 
+;;
 
 
 (provide 'xclip)

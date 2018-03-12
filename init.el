@@ -51,7 +51,8 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     (defvar global-font-face "Iosevka Term")
+     ;(defvar global-font-face "Iosevka Term")
+     (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -271,21 +272,9 @@
   (interactive)
   (delete-region (point-min) (point-max)))
 
-(defun open-url-at-point (fun)
-  (letrec ((fname (thing-at-point 'filename))
-           (clean-fname
-            (replace-regexp-in-string "\\.\\.\\." "" fname))
-           (prepended-fname
-            (replace-regexp-in-string "^/" "file:///" clean-fname)))
-    (funcall fun (format "%s" prepended-fname))))
-
-(defun browse-url-at-point ()
-  (interactive)
-  (open-url-at-point
-   (lambda(name)
-     (message name)
-     (let ((process-connection-type nil))
-     (start-process "" nil "exo-open" name)))))
+;; (setq browse-url-browser-function 'browse-url-generic
+;;         engine/browser-function 'browse-url-generic
+;;         browse-url-generic-program "/home/p/.local/bin/open_in_current_browser")
 
 (defun dump-url (url &rest ignore)
   "Dump URL using w3m."
@@ -320,6 +309,7 @@
 (global-unset-key (kbd "C-r"))
 (global-unset-key (kbd "C-s"))
 (global-unset-key (kbd "C-x C-b"))
+(global-unset-key (kbd "C-x C-n"))
 (global-unset-key (kbd "C-x C-p"))
 (global-unset-key (kbd "C-x C-r"))
 (global-unset-key (kbd "C-x C-z"))
