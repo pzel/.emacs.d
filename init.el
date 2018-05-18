@@ -6,15 +6,15 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")
+                         ;("elpa" . "https://elpa.gnu.org/packages/")
                          ))
 (package-initialize)
 
 ;; Authinfo
-(setq auth-sources '("~/.authinfo.gpg"))
+;; (setq auth-sources '("~/.authinfo.gpg"))
 
 ;; My custom globals
-(defvar global-font-height 132)
+(defvar global-font-height 140)
 (defvar original-mode-line-format mode-line-format)
 
 ;; LOOK-N-FEEL ;;
@@ -51,14 +51,20 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     ;(defvar global-font-face "Iosevka Term")
-     (defvar global-font-face "Fira Mono")
+     (defvar global-font-face "Iosevka Term")
+     ;(defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
      (tool-bar-mode -1)
+     ;; these two lines make touchpad scrolling usable
+     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+     (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
      (set-face-background 'trailing-whitespace "IndianRed1")
+     (set-face-attribute 'fixed-pitch nil
+                         :font global-font-face
+                         :height global-font-height)
      (set-face-attribute 'default nil
                          :font global-font-face
                          :height global-font-height)
@@ -134,6 +140,9 @@
 ;; Sane regular expressions
 (require 're-builder)
 (setq reb-re-syntax 'string)
+
+;; FLYCHECK
+;(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Haskell mode
 ;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -355,7 +364,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
