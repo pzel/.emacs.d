@@ -14,7 +14,7 @@
 ;; (setq auth-sources '("~/.authinfo.gpg"))
 
 ;; My custom globals
-(defvar global-font-height 140)
+(defvar global-font-height 150) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
 
 ;; LOOK-N-FEEL ;;
@@ -136,6 +136,18 @@
 (setq-default erlang-indent-level 4)
 (setq-default erlang-electric-commands '())
 (require 'slim-erlang)
+
+;; PONY
+(add-hook
+  'ponylang-mode-hook
+  (lambda ()
+    (set-variable 'indent-tabs-mode nil)
+    (set-variable 'tab-width 2)))
+
+;; PYTHON
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq jedi:setup-keys t)
+;; (setq jedi:complete-on-dot t)
 
 ;; Sane regular expressions
 (require 're-builder)
@@ -304,12 +316,14 @@
 (defun global-font-size-bigger ()
   (interactive)
   (setq global-font-height (+ global-font-height 10))
-  (set-face-attribute 'default nil :font global-font-face :height global-font-height))
+  (set-face-attribute 'default nil :font global-font-face :height global-font-height)
+  (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
 
 (defun global-font-size-smaller ()
   (interactive)
   (setq global-font-height (- global-font-height 10))
-  (set-face-attribute 'default nil :font global-font-face :height global-font-height))
+  (set-face-attribute 'default nil :font global-font-face :height global-font-height)
+  (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
 
 ;; keybindings
 (global-unset-key (kbd "<f1>"))
@@ -364,12 +378,12 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (ag typescript-mode jedi flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
      (web-mode-engines-alist quote
-                             (("django" . "\\.html\\'")))))))
+			     (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
