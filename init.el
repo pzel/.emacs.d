@@ -260,6 +260,7 @@
 (add-hook 'comint-mode-hook
 	  (lambda ()
 	    (define-key shell-mode-map (kbd "RET") 'shell-eol-and-insert)
+	    (font-lock-mode 0)
 	    (global-unset-key (kbd "C-x C-x"))))
 
 (setenv "NODE_NO_READLINE" "1")
@@ -378,7 +379,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (ag typescript-mode jedi flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (package-lint ag typescript-mode jedi flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
