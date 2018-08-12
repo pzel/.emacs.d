@@ -331,7 +331,9 @@
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-r"))
+(global-unset-key (kbd "C-r"))
 (global-unset-key (kbd "C-s"))
+(global-unset-key (kbd "C-t")) ;; transpose characters
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "C-x C-n"))
 (global-unset-key (kbd "C-x C-p"))
