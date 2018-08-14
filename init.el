@@ -94,29 +94,6 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (windmove-default-keybindings)
 
-;; ;; W3M Browser
-;; (setq w3m-coding-system 'utf-8
-;;       w3m-file-coding-system 'utf-8
-;;       w3m-file-name-coding-system 'utf-8
-;;       w3m-input-coding-system 'utf-8
-;;       w3m-output-coding-system 'utf-8
-;;       w3m-terminal-coding-system 'utf-8
-;;       w3m-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36")
-;; (setq browse-url-browser-function 'w3m-browse-url)
-;; (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
-;; (global-set-key "\C-xm" 'browse-url-at-point)
-
-;; ;; https://gist.github.com/venmos-zz/6190816
-;; (setq w3m-search-default-engine "DuckDuck Go")
-;; (setq w3m-search-engine-alist '())
-;; (add-to-list 'w3m-search-engine-alist
-;;   	'("DuckDuck Go" "http://www.duckduckgo.com/html?q=%s"))
-
-;; (defadvice w3m-search (after change-default activate)
-;;   (let ((engine (nth 1 minibuffer-history)))
-;;     (when (assoc engine w3m-search-engine-alist)
-;;       (setq w3m-search-default-engine engine))))
-
 ;; WEB MODE
 (setq-default web-mode-markup-indent-offset 2)
 (setq-default web-mode-css-indent-offset 2)
@@ -294,17 +271,6 @@
   (interactive)
   (delete-region (point-min) (point-max)))
 
-;; (setq browse-url-browser-function 'browse-url-generic
-;;         engine/browser-function 'browse-url-generic
-;;         browse-url-generic-program "/home/p/.local/bin/open_in_current_browser")
-
-(defun dump-url (url &rest ignore)
-  "Dump URL using w3m."
-  (interactive "sURL: ")
-  (shell-command (concat "w3m " url))
-  (pop-to-buffer "*Shell Command Output*")
-  (setq truncate-lines t))
-
 (defun refresh-buffer ()
   "Reload file-local variables"
   (interactive)
@@ -326,44 +292,36 @@
   (set-face-attribute 'default nil :font global-font-face :height global-font-height)
   (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
 
-;; keybindings
-(global-unset-key (kbd "<f1>"))
-(global-unset-key (kbd "<f2>"))
-(global-unset-key (kbd "C-o"))
-(global-unset-key (kbd "C-r"))
-(global-unset-key (kbd "C-r"))
-(global-unset-key (kbd "C-s"))
-(global-unset-key (kbd "C-t")) ;; transpose characters
-(global-unset-key (kbd "C-x C-b"))
-(global-unset-key (kbd "C-x C-n"))
-(global-unset-key (kbd "C-x C-p"))
-(global-unset-key (kbd "C-x C-r"))
-(global-unset-key (kbd "C-x C-z"))
-(global-unset-key (kbd "C-x m"))
-(global-unset-key (kbd "C-z"))
+;; Keybindings
+;; Unset obnoxious bindings
+(mapcar (lambda(key) (global-unset-key (kbd key)))
+	'("<f1>" "<f2>"
+	  "C-o" "C-r" "C-r" "C-s" "C-t"
+	  "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
+	  "C-x m" "C-z"))
 
-(global-set-key "\M-g" 'goto-line)
-(global-set-key (kbd "<f1>") 'top-level)
-(global-set-key (kbd "<f2>") 'save-buffer)
-(global-set-key (kbd "<f5>") 'refresh-buffer)
-(global-set-key (kbd "C-+") 'global-font-size-bigger)
-(global-set-key (kbd "C--") 'global-font-size-smaller)
-(global-set-key (kbd "C-<tab>") 'other-window)
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (kbd "C-c C-k") 'clear-buffer-permenantly)
-(global-set-key (kbd "C-c w") 'delete-trailing-whitespace)
-(global-set-key (kbd "C-o C-o") 'other-window)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-x C-b") 'electric-buffer-list)
-(global-set-key (kbd "C-x C-m") 'compile)
-(global-set-key (kbd "C-x C-r") 'ffap-other-window)
-(global-set-key (kbd "C-x E") (kbd "C-u 1 C-x C-e")) ;; eval-into-buffer
-(global-set-key (kbd "M-1") 'shell1)
-(global-set-key (kbd "M-2") 'shell2)
-(global-set-key (kbd "M-3") 'shell3)
-(global-set-key (kbd "M-RET") 'shell1)
-(global-set-key (kbd "M-`") 'other-window)
+;; Set custom keybindings
+(mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
+					  (cdr key-bind)))
+	'(("<f1>" . top-level)
+	  ("<f2>" . save-buffer)
+	  ("<f5>" . refresh-buffer)
+	  ("<f7>" . ispell-buffer)
+	  ("C-+" . global-font-size-bigger)
+	  ("C--" . global-font-size-smaller)
+	  ("C-c C-c" . comment-or-uncomment-region)
+	  ("C-c C-k" . clear-buffer-permenantly)
+	  ("C-c w" . delete-trailing-whitespace)
+	  ("C-o C-o" . other-window)
+	  ("C-r" . isearch-backward-regexp)
+	  ("C-s" . isearch-forward-regexp)
+	  ("C-x C-b" . electric-buffer-list)
+	  ("C-x C-m" . compile)
+	  ("C-x C-r" . ffap-other-window)
+	  ("C-x E" . (kbd "C-u 1 C-x C-e"))
+	  ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
+	  ("M-RET" . shell1)
+	  ("M-g" . goto-line)))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
