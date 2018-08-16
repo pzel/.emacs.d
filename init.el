@@ -236,8 +236,8 @@
 (setq-default comint-prompt-regexp "")
 (add-hook 'comint-mode-hook
 	  (lambda ()
-	    (define-key shell-mode-map (kbd "RET") 'shell-eol-and-insert)
-	    (font-lock-mode 0)
+	    (define-key shell-mode-map (kbd "RET")
+	      'shell-eol-and-insert)
 	    (global-unset-key (kbd "C-x C-x"))))
 
 (setenv "NODE_NO_READLINE" "1")
@@ -260,6 +260,7 @@
 (defun shell-run (name)
   (interactive)
   (shell name)
+  (font-lock-mode 0)
   (setq show-trailing-whitespace nil))
 
 (defun shell1 () (interactive) (shell-run "*shell-1*"))
