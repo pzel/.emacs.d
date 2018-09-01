@@ -173,24 +173,24 @@
 
 ;; MODE BINDINGS
 (mapcar (lambda (pair)
-	  (add-to-list 'auto-mode-alist pair))
-	'(
-	  (".spec$" . erlang-mode)
-	  ("rebar.config$" . erlang-mode)
-	  ("reltool.config$" . erlang-mode)
-	  (".app.src$" . erlang-mode)
-	  (".pde$" . java-mode)
-	  ("\\.sxml$" . scheme-mode)
-	  (".sld$" . scheme-mode)
-	  (".lfe$" . scheme-mode)
-	  ("\\.org\\.gpg$" . org-mode)
-	  ("\\.org\\.gpg\\.asc$" . org-mode)
-	  ("Gemfile$" . ruby-mode)
-	  ("Rakefile$" . ruby-mode)
-	  (".md$" . markdown-mode)
-	  ("\\.html?\\'" . web-mode)
-	  ("\\.css?\\'" . web-mode)
-	  (".pug$" . javascript-mode)
+    (add-to-list 'auto-mode-alist pair))
+  '(
+    (".spec$" . erlang-mode)
+    ("rebar.config$" . erlang-mode)
+    ("reltool.config$" . erlang-mode)
+    (".app.src$" . erlang-mode)
+    (".pde$" . java-mode)
+    ("\\.sxml$" . scheme-mode)
+    (".sld$" . scheme-mode)
+    (".lfe$" . scheme-mode)
+    ("\\.org\\.gpg$" . org-mode)
+    ("\\.org\\.gpg\\.asc$" . org-mode)
+    ("Gemfile$" . ruby-mode)
+    ("Rakefile$" . ruby-mode)
+    (".md$" . markdown-mode)
+    ("\\.html?\\'" . web-mode)
+    ("\\.css?\\'" . web-mode)
+    (".pug$" . javascript-mode)
     ))
 
 
@@ -199,6 +199,7 @@
 (setq-default electric-indent-mode 0)
 (setq-default show-trailing-whitespace t)
 (show-paren-mode 1)
+(setq-default show-paren-delay 0)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 (setq-default indent-tabs-mode nil)
@@ -209,9 +210,9 @@
 
 ;; Use acutal tabs in Makefiles; show whitespace
 (add-hook 'makefile-mode-hook
-	  (lambda()
-	    (setq-default indent-tabs-mode t)
-	    (setq-default tab-width 8)))
+    (lambda()
+      (setq-default indent-tabs-mode t)
+      (setq-default tab-width 8)))
 
 ;; No emacs poo files
 (setq-default create-lockfiles nil)
@@ -228,6 +229,7 @@
 
 
 ;; M-x shell tweaks
+(setq-default sh-basic-offset 2)
 (setq explicit-shell-file-name global-shell-location)
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
@@ -235,10 +237,10 @@
 (setq-default comint-use-prompt-regexp t)
 (setq-default comint-prompt-regexp "")
 (add-hook 'comint-mode-hook
-	  (lambda ()
-	    (define-key shell-mode-map (kbd "RET")
-	      'shell-eol-and-insert)
-	    (global-unset-key (kbd "C-x C-x"))))
+    (lambda ()
+      (define-key shell-mode-map (kbd "RET")
+        'shell-eol-and-insert)
+      (global-unset-key (kbd "C-x C-x"))))
 
 (setenv "NODE_NO_READLINE" "1")
 (setenv "EDITOR" "emx")
@@ -296,33 +298,34 @@
 ;; Keybindings
 ;; Unset obnoxious bindings
 (mapcar (lambda(key) (global-unset-key (kbd key)))
-	'("<f1>" "<f2>"
-	  "C-o" "C-r" "C-r" "C-s" "C-t"
-	  "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
-	  "C-x m" "C-z"))
+  '("<f1>" "<f2>"
+    "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
+    "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
+    "C-x m" "C-z"))
 
 ;; Set custom keybindings
 (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
-					  (cdr key-bind)))
-	'(("<f1>" . top-level)
-	  ("<f2>" . save-buffer)
-	  ("<f5>" . refresh-buffer)
-	  ("<f7>" . ispell-buffer)
-	  ("C-+" . global-font-size-bigger)
-	  ("C--" . global-font-size-smaller)
-	  ("C-c C-c" . comment-or-uncomment-region)
-	  ("C-c C-k" . clear-buffer-permenantly)
-	  ("C-c w" . delete-trailing-whitespace)
-	  ("C-o C-o" . other-window)
-	  ("C-r" . isearch-backward-regexp)
-	  ("C-s" . isearch-forward-regexp)
-	  ("C-x C-b" . electric-buffer-list)
-	  ("C-x C-m" . compile)
-	  ("C-x C-r" . ffap-other-window)
-	  ("C-x E" . (kbd "C-u 1 C-x C-e"))
-	  ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
-	  ("M-RET" . shell1)
-	  ("M-g" . goto-line)))
+            (cdr key-bind)))
+  '(("<f1>" . top-level)
+    ("<f2>" . save-buffer)
+    ("<f5>" . refresh-buffer)
+    ("<f7>" . ispell-buffer)
+    ("C-+" . global-font-size-bigger)
+    ("C--" . global-font-size-smaller)
+    ("C-j" . newline)
+    ("C-c C-c" . comment-or-uncomment-region)
+    ("C-c C-k" . clear-buffer-permenantly)
+    ("C-c w" . delete-trailing-whitespace)
+    ("C-o C-o" . other-window)
+    ("C-r" . isearch-backward-regexp)
+    ("C-s" . isearch-forward-regexp)
+    ("C-x C-b" . electric-buffer-list)
+    ("C-x C-m" . compile)
+    ("C-x C-r" . ffap-other-window)
+    ("C-x E" . (kbd "C-u 1 C-x C-e"))
+    ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
+    ("M-RET" . shell1)
+    ("M-g" . goto-line)))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -340,12 +343,12 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (package-lint ag typescript-mode jedi flycheck-pony pony-mode ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent terraform-mode web-mode-edit-element web-mode tuareg sml-mode elfeed w3m graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
      (web-mode-engines-alist quote
-			     (("django" . "\\.html\\'")))))))
+                             (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
