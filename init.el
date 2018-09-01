@@ -195,8 +195,8 @@
 
 
 ;; TEXT FORMATTING ;;
-(electric-indent-mode 0)
-(setq-default electric-indent-mode 0)
+(electric-indent-mode nil)
+(setq-default electric-indent-mode nil)
 (setq-default show-trailing-whitespace t)
 (show-paren-mode 1)
 (setq-default show-paren-delay 0)
