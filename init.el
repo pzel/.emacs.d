@@ -102,9 +102,15 @@
 ;; ELM
 (setq-default elm-indent-offset 2)
 
+
 ;; PROJECTILE
-(projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
+(use-package projectile
+	     :init
+	     (setq projectile-completion-system 'grizzl)
+	     (setq projectile-tags-file-name "tags")
+	     :config
+	     (projectile-global-mode))
+
 
 ;; ERLANG/ELIXIR
 (require 'erlang-start)
@@ -343,12 +349,12 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
      (web-mode-engines-alist quote
-                             (("django" . "\\.html\\'")))))))
+			     (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
