@@ -199,7 +199,6 @@
     (".pug$" . javascript-mode)
     ))
 
-
 ;; TEXT FORMATTING ;;
 (electric-indent-mode nil)
 (setq-default electric-indent-mode nil)
@@ -311,8 +310,8 @@
 
 ;; Set custom keybindings
 (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
-            (cdr key-bind)))
-  '(("<f1>" . top-level)
+					  (cdr key-bind)))
+  `(("<f1>" . top-level)
     ("<f2>" . save-buffer)
     ("<f5>" . refresh-buffer)
     ("<f7>" . ispell-buffer)
@@ -328,7 +327,7 @@
     ("C-x C-b" . electric-buffer-list)
     ("C-x C-m" . compile)
     ("C-x C-r" . ffap-other-window)
-    ("C-x E" . (kbd "C-u 1 C-x C-e"))
+    ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
     ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
     ("M-RET" . shell1)
     ("M-g" . goto-line)))
@@ -349,7 +348,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
