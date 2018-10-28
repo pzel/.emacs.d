@@ -148,6 +148,7 @@
 
 ;; EasyPG: GPG support (decrypt in buffer; save encrypted)
 (require 'epa-file)
+(setq epa-pinentry-mode 'loopback)
 (load "armor-mode")
 (epa-file-enable)
 (setq epg-gpg-program "/usr/bin/gpg2")
