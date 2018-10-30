@@ -301,6 +301,10 @@
   (set-face-attribute 'default nil :font global-font-face :height global-font-height)
   (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
 
+(defun insert-current-datetime ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%dT%H:%M")))
+
 ;; Keybindings
 ;; Unset obnoxious bindings
 (mapcar (lambda(key) (global-unset-key (kbd key)))
@@ -323,6 +327,7 @@
     ("C-c C-k" . clear-buffer-permenantly)
     ("C-c w" . delete-trailing-whitespace)
     ("C-o C-o" . other-window)
+    ("M-o d" . insert-current-datetime)
     ("C-r" . isearch-backward-regexp)
     ("C-s" . isearch-forward-regexp)
     ("C-x C-b" . electric-buffer-list)
@@ -349,7 +354,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
