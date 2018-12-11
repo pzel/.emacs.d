@@ -6,15 +6,19 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ;("elpa" . "https://elpa.gnu.org/packages/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")
                          ))
 (package-initialize)
+
+;; Needs to me set not only in M-x shell :\
+;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
+;;(pinentry-start)
 
 ;; Authinfo
 ;; (setq auth-sources '("~/.authinfo.gpg"))
 
 ;; My custom globals
-(defvar global-font-height 150) ;; use 140 on low-res screen
+(defvar global-font-height 100) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
 
 ;; LOOK-N-FEEL ;;
@@ -51,8 +55,8 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     (defvar global-font-face "Iosevka Term")
-     ;(defvar global-font-face "Fira Mono")
+     ;(defvar global-font-face "Iosevka Term")
+     (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -93,6 +97,7 @@
 ;; INPUT & CONTROL
 (fset 'yes-or-no-p 'y-or-n-p)
 (windmove-default-keybindings)
+(setq large-file-warning-threshold (* 24 10000000))
 
 ;; WEB MODE
 (setq-default web-mode-markup-indent-offset 2)
@@ -106,17 +111,18 @@
 ;; PROJECTILE
 (use-package projectile
 	     :init
-	     (setq projectile-completion-system 'grizzl)
+	     ;;(setq projectile-completion-system 'grizzl)
 	     (setq projectile-tags-file-name "tags")
 	     :config
 	     (projectile-global-mode))
-
+(define-key projectile-mode-map (kbd "C-c p")
+	'projectile-command-map)
 
 ;; ERLANG/ELIXIR
 (require 'erlang-start)
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 (add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(setq-default erlang-indent-level 4)
+(setq-default erlang-indent-level 2)
 (setq-default erlang-electric-commands '())
 (require 'slim-erlang)
 
@@ -128,9 +134,9 @@
     (set-variable 'tab-width 2)))
 
 ;; PYTHON
-;; (add-hook 'python-mode-hook 'jedi:setup)
-;; (setq jedi:setup-keys t)
-;; (setq jedi:complete-on-dot t)
+(add-hook
+ 'python-mode-hook
+ '(lambda () (local-unset-key (kbd "C-c C-c"))))
 
 ;; Sane regular expressions
 (require 're-builder)
@@ -175,6 +181,11 @@
 (autoload 'org-present "org-present" nil t)
 (load-file (expand-file-name "~/.emacs.d/lisp/org-present-hooks.el"))
 
+;; IDO
+(setq ido-enable-flex-matching t)
+;;(setq ido-everywhere t)
+;;(ido-mode 1)
+
 ;; ISPELL
 (setq ispell-program-name "/usr/bin/hunspell")
 
@@ -214,17 +225,21 @@
 (setq-default c-basic-offset 2)
 (setq-default js-indent-level 2)
 
-;; Use acutal tabs in Makefiles; show whitespace
+;; Use acutal tabs in Makefiles
 (add-hook 'makefile-mode-hook
     (lambda()
-      (setq-default indent-tabs-mode t)
-      (setq-default tab-width 8)))
+      (setq indent-tabs-mode t)
+;;      (whitespace-mode 1)
+      (setq tab-width 8)))
 
 ;; No emacs poo files
 (setq-default create-lockfiles nil)
 (setq-default make-backup-files nil)
 (setq-default backup-inhibited t)
 (setq-default auto-save-default nil)
+
+;; Debug on error
+(setq-default debug-on-error t)
 
 ;; Reloading minor modes
 (defun active-minor-modes ()
@@ -311,32 +326,37 @@
   '("<f1>" "<f2>"
     "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
     "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
-    "C-x m" "C-z"))
+    "C-x m" "C-z"
+    "M-`"
+    ))
 
 ;; Set custom keybindings
 (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
 					  (cdr key-bind)))
-  `(("<f1>" . top-level)
+  `(
+    ("<f1>" . top-level)
     ("<f2>" . save-buffer)
     ("<f5>" . refresh-buffer)
     ("<f7>" . ispell-buffer)
     ("C-+" . global-font-size-bigger)
     ("C--" . global-font-size-smaller)
-    ("C-j" . newline)
     ("C-c C-c" . comment-or-uncomment-region)
     ("C-c C-k" . clear-buffer-permenantly)
     ("C-c w" . delete-trailing-whitespace)
+    ("C-j" . newline)
     ("C-o C-o" . other-window)
-    ("M-o d" . insert-current-datetime)
     ("C-r" . isearch-backward-regexp)
     ("C-s" . isearch-forward-regexp)
     ("C-x C-b" . electric-buffer-list)
     ("C-x C-m" . compile)
     ("C-x C-r" . ffap-other-window)
     ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
+    ("M-`" . other-window)
     ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
     ("M-RET" . shell1)
-    ("M-g" . goto-line)))
+    ("M-g" . goto-line)
+    ("M-o d" . insert-current-datetime)
+    ))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -354,7 +374,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
