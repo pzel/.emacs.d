@@ -1,4 +1,5 @@
 ;; PATHS
+(require 'subr-x)
 (require 'cl-lib)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
@@ -65,6 +66,7 @@
      (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
      (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
+     (set-background-color "#F6F4E5")
      (set-face-background 'trailing-whitespace "IndianRed1")
      (set-face-attribute 'fixed-pitch nil
                          :font global-font-face
@@ -239,7 +241,7 @@
 (setq-default auto-save-default nil)
 
 ;; Debug on error
-(setq-default debug-on-error t)
+(setq debug-on-error t)
 
 ;; Reloading minor modes
 (defun active-minor-modes ()
