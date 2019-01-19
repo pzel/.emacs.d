@@ -1,20 +1,28 @@
 ;; PATHS
+;; Local lisp stuff
 (require 'subr-x)
 (require 'cl-lib)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
+
+;; Packages
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("elpa" . "https://elpa.gnu.org/packages/")
                          ))
 (package-initialize)
 
+;; Bootstrap `use-package`
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+
 ;; Needs to me set not only in M-x shell :\
 ;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
 ;;(pinentry-start)
-
 ;; Authinfo
 ;; (setq auth-sources '("~/.authinfo.gpg"))
 
@@ -25,8 +33,11 @@
 ;; LOOK-N-FEEL ;;
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
+(setq initial-scratch-message "")
 (if (fboundp 'menu-bar-mode) (menu-bar-mode 0))
-;(global-font-lock-mode 1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(windmove-default-keybindings)
+(setq large-file-warning-threshold (* 24 10000000))
 (set-face-underline-p 'underline nil)
 (column-number-mode t)
 (size-indication-mode t)
@@ -96,49 +107,54 @@
      (setq shell-command-switch "-lc")
      (setq-default os-open-command "open"))))
 
-;; INPUT & CONTROL
-(fset 'yes-or-no-p 'y-or-n-p)
-(windmove-default-keybindings)
-(setq large-file-warning-threshold (* 24 10000000))
 
-;; WEB MODE
+;; INDENTS
 (setq-default web-mode-markup-indent-offset 2)
 (setq-default web-mode-css-indent-offset 2)
 (setq-default web-mode-code-indent-offset 2)
-
-;; ELM
 (setq-default elm-indent-offset 2)
 
-
-;; PROJECTILE
+;; PROJECTILE-CONTROLLED MODES
 (use-package projectile
-	     :init
-	     ;;(setq projectile-completion-system 'grizzl)
-	     (setq projectile-tags-file-name "tags")
-	     :config
-	     (projectile-global-mode))
-(define-key projectile-mode-map (kbd "C-c p")
-	'projectile-command-map)
+  :ensure t
+	:init
+	(setq projectile-tags-file-name "tags")
+  (define-key projectile-mode-map (kbd "C-c p")
+	  'projectile-command-map)
+	:config
+	(projectile-global-mode))
 
-;; ERLANG/ELIXIR
-(require 'erlang-start)
-(add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-(setq-default erlang-indent-level 2)
-(setq-default erlang-electric-commands '())
-(require 'slim-erlang)
+(use-package which-key
+  :ensure t
+  :init
+  (setq which-key-separator " ")
+  (setq which-key-prefix-prefix "+")
+  :config
+  (which-key-mode 1))
 
-;; PONY
-(add-hook
-  'ponylang-mode-hook
-  (lambda ()
-    (set-variable 'indent-tabs-mode nil)
-    (set-variable 'tab-width 2)))
+(use-package erlang
+  :ensure t
+  :init
+  (setq erlang-indent-level 2)
+  (setq erlang-electric-commands '())
+  (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
+  (add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil))))
+(require 'slim-erlang) ;; Local erlang templates
 
-;; PYTHON
-(add-hook
- 'python-mode-hook
- '(lambda () (local-unset-key (kbd "C-c C-c"))))
+(use-package pony-mode
+  :ensure t
+  :init
+  (add-hook 'ponylang-mode-hook
+            (lambda ()
+              (set-variable 'indent-tabs-mode nil)
+              (set-variable 'tab-width 2))))
+
+(use-package python-mode
+  :ensure t
+  :init
+  (add-hook 'python-mode-hook
+            '(lambda () (local-unset-key (kbd "C-c C-c")))))
+
 
 ;; Sane regular expressions
 (require 're-builder)
@@ -207,7 +223,7 @@
     ("\\.org\\.gpg\\.asc$" . org-mode)
     ("Gemfile$" . ruby-mode)
     ("Rakefile$" . ruby-mode)
-    (".md$" . markdown-mode)
+;    (".md$" . markdown-mode)
     ("\\.html?\\'" . web-mode)
     ("\\.css?\\'" . web-mode)
     (".pug$" . javascript-mode)
@@ -376,12 +392,12 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
      (web-mode-engines-alist quote
-			     (("django" . "\\.html\\'")))))))
+                             (("django" . "\\.html\\'")))))))
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
