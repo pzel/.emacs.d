@@ -352,7 +352,7 @@
 (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
 					  (cdr key-bind)))
   `(
-    ("<f1>" . top-level)
+    ("<f1>" . other-window)
     ("<f2>" . save-buffer)
     ("<f5>" . refresh-buffer)
     ("<f7>" . ispell-buffer)
