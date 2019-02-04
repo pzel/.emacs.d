@@ -77,7 +77,8 @@
      (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
      (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
-     (set-background-color "#F6F4E5")
+     ;;(set-background-color "#F6F4E5")
+     (set-background-color "#FEFEFF")
      (set-face-background 'trailing-whitespace "IndianRed1")
      (set-face-attribute 'fixed-pitch nil
                          :font global-font-face
@@ -119,10 +120,14 @@
   :ensure t
 	:init
 	(setq projectile-tags-file-name "tags")
-  (define-key projectile-mode-map (kbd "C-c p")
-	  'projectile-command-map)
 	:config
 	(projectile-global-mode))
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+(use-package column-enforce-mode
+  :ensure t
+  :init
+  (setq column-enforce-column 80))
 
 (use-package which-key
   :ensure t
@@ -141,19 +146,34 @@
   (add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil))))
 (require 'slim-erlang) ;; Local erlang templates
 
+(tempo-define-template
+   "pony-printf"
+   '("@printf[I32](\"" (p "Format string: " fmt-string)  "\\n\".cstring())")
+    nil
+    "Insert a @printf call.")
+
+(tempo-define-template
+   "pony-stringify"
+   '(".string().cstring()")
+    nil
+    "call .string() .cstring() at point")
+
 (use-package pony-mode
   :ensure t
   :init
   (add-hook 'ponylang-mode-hook
             (lambda ()
+              (local-set-key (kbd "C-c i") 'tempo-template-pony-printf)
+              (local-set-key (kbd "C-c u") 'tempo-template-pony-stringify)
+              (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+              (column-enforce-mode 1)
+              (display-line-numbers-mode 1)
               (set-variable 'indent-tabs-mode nil)
               (set-variable 'tab-width 2))))
 
-(use-package python-mode
-  :ensure t
-  :init
-  (add-hook 'python-mode-hook
-            '(lambda () (local-unset-key (kbd "C-c C-c")))))
+;; Disable C-c C-c in python mode
+(add-hook 'python-mode-hook
+          '(lambda () (local-unset-key (kbd "C-c C-c"))))
 
 
 ;; Sane regular expressions
