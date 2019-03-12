@@ -67,8 +67,8 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     ;(defvar global-font-face "Iosevka Term")
-     (defvar global-font-face "Fira Mono")
+     (defvar global-font-face "Iosevka Term")
+;;     (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -124,6 +124,18 @@
 	(projectile-global-mode))
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
+(use-package graphviz-dot-mode
+  :ensure t
+  :init
+  (add-hook 'graphviz-dot-mode-hook
+            (lambda ()
+              (local-unset-key (kbd "RET")
+              (local-unset-key (kbd ";"))))))
+
+
+(use-package rainbow-delimiters
+  :ensure t)
+
 (use-package column-enforce-mode
   :ensure t
   :init
@@ -167,13 +179,22 @@
               (local-set-key (kbd "C-c u") 'tempo-template-pony-stringify)
               (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
               (column-enforce-mode 1)
-              (display-line-numbers-mode 1)
+              ;(display-line-numbers-mode 1)
               (set-variable 'indent-tabs-mode nil)
               (set-variable 'tab-width 2))))
 
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
           '(lambda () (local-unset-key (kbd "C-c C-c"))))
+
+;; Disable dangling space hilight in term mode
+(defun disable-trailing-whitespace()
+    (setq show-trailing-whitespace nil))
+
+(add-hook 'term-mode-hook
+          #'disable-trailing-whitespace)
+(add-hook 'ansi-term-mode-hook
+          #'disable-trailing-whitespace)
 
 
 ;; Sane regular expressions
@@ -201,6 +222,7 @@
 (setq epa-file-select-keys nil)
 
 ;; ORG MODE
+(defun org-home () (interactive) (find-file-at-point "~/notes.org/index.org.gpg"))
 (setq org-export-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 (setq coding-system-for-read 'utf-8)
@@ -214,7 +236,7 @@
 (global-set-key (kbd "M-o c") 'org-capture)
 (global-set-key (kbd "M-o b") 'org-iswitchb)
 (global-set-key (kbd "M-o p") 'org-present)
-
+(global-set-key (kbd "<f8>") 'org-home)
 ;; ORG-PRESENT
 (autoload 'org-present "org-present" nil t)
 (load-file (expand-file-name "~/.emacs.d/lisp/org-present-hooks.el"))
@@ -250,6 +272,7 @@
     ))
 
 ;; TEXT FORMATTING ;;
+(setq-default bidi-display-reordering nil)
 (electric-indent-mode nil)
 (setq-default electric-indent-mode nil)
 (setq-default show-trailing-whitespace t)
@@ -277,7 +300,7 @@
 (setq-default auto-save-default nil)
 
 ;; Debug on error
-(setq debug-on-error t)
+; (setq debug-on-error nil)
 
 ;; Reloading minor modes
 (defun active-minor-modes ()
@@ -328,6 +351,8 @@
 (defun shell2 () (interactive) (shell-run "*shell-2*"))
 (defun shell3 () (interactive) (shell-run "*shell-3*"))
 
+
+
 (defun clear-buffer-permenantly ()
   "clear whole buffer, contents are not added to the kill ring"
   (interactive)
@@ -361,7 +386,7 @@
 ;; Keybindings
 ;; Unset obnoxious bindings
 (mapcar (lambda(key) (global-unset-key (kbd key)))
-  '("<f1>" "<f2>"
+  '("<f1>" "<f2>" "<f3>" "<f4>"
     "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
     "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
     "C-x m" "C-z"
@@ -374,8 +399,13 @@
   `(
     ("<f1>" . other-window)
     ("<f2>" . save-buffer)
+    ("<f3>" . projectile-find-file)
+    ("<f4>" . kill-buffer)
     ("<f5>" . refresh-buffer)
+    ("<f6>" . electric-buffer-list)
     ("<f7>" . ispell-buffer)
+    ("<up>" . scroll-up-command)
+    ("<down>" . scroll-down-command)
     ("C-+" . global-font-size-bigger)
     ("C--" . global-font-size-smaller)
     ("C-c C-c" . comment-or-uncomment-region)
@@ -412,7 +442,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (rainbow-delimiters pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
