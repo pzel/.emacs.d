@@ -20,6 +20,12 @@
   (package-install 'use-package))
 (require 'use-package)
 
+(use-package color-theme
+  :ensure t)
+
+(use-package commentary-theme
+  :ensure t)
+
 ;; Needs to me set not only in M-x shell :\
 ;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
 ;;(pinentry-start)
@@ -67,8 +73,8 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     (defvar global-font-face "Iosevka Term")
-;;     (defvar global-font-face "Fira Mono")
+;;     (defvar global-font-face "Iosevka Term")
+     (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -135,6 +141,14 @@
 
 (use-package rainbow-delimiters
   :ensure t)
+
+(use-package w3m
+  :ensure t
+  :init
+  (add-hook 'w3m-mode-hook
+            (lambda ()
+              (local-set-key (kbd "]") 'w3m-tab-next-buffer)
+              (local-set-key (kbd "[") 'w3m-tab-previous-buffer))))
 
 (use-package column-enforce-mode
   :ensure t
@@ -404,8 +418,8 @@
     ("<f5>" . refresh-buffer)
     ("<f6>" . electric-buffer-list)
     ("<f7>" . ispell-buffer)
-    ("<up>" . scroll-up-command)
-    ("<down>" . scroll-down-command)
+    ("<up>" . scroll-down-command)
+    ("<down>" . scroll-up-command)
     ("C-+" . global-font-size-bigger)
     ("C--" . global-font-size-smaller)
     ("C-c C-c" . comment-or-uncomment-region)
@@ -442,7 +456,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (rainbow-delimiters pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (forth-mode color-theme-initialize w3m rainbow-delimiters pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
