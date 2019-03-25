@@ -4,8 +4,6 @@
 (require 'cl-lib)
 (add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/erlang-mode"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/xclip-1.3/"))
 
 ;; Packages
 (require 'package)
@@ -33,7 +31,7 @@
 ;; (setq auth-sources '("~/.authinfo.gpg"))
 
 ;; My custom globals
-(defvar global-font-height 100) ;; use 140 on low-res screen
+(defvar global-font-height 140) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
 
 ;; LOOK-N-FEEL ;;
@@ -62,8 +60,8 @@
 (cond
  ((eq window-system 'nil)
   (progn
-    (require 'xclip)
     (require 'mouse)
+    (xclip-mode 1)
     ;;(color-theme-initialize)
     ;;(color-theme-retro-orange) ;; set orange
     (global-font-lock-mode 0)    ;; disable dynamic highlighting
@@ -73,7 +71,7 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-;;     (defvar global-font-face "Iosevka Term")
+;;     (defvar global-font-face "Iosevka Type")
      (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
@@ -184,7 +182,7 @@
     nil
     "call .string() .cstring() at point")
 
-(use-package pony-mode
+(use-package ponylang-mode
   :ensure t
   :init
   (add-hook 'ponylang-mode-hook
@@ -418,8 +416,8 @@
     ("<f5>" . refresh-buffer)
     ("<f6>" . electric-buffer-list)
     ("<f7>" . ispell-buffer)
-    ("<up>" . scroll-down-command)
-    ("<down>" . scroll-up-command)
+    ;; ("<up>" . scroll-down-command)
+    ;; ("<down>" . scroll-up-command)
     ("C-+" . global-font-size-bigger)
     ("C--" . global-font-size-smaller)
     ("C-c C-c" . comment-or-uncomment-region)
@@ -456,7 +454,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (forth-mode color-theme-initialize w3m rainbow-delimiters pony-mode python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
