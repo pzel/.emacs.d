@@ -24,6 +24,12 @@
 (use-package commentary-theme
   :ensure t)
 
+(use-package tuareg
+  :ensure t)
+
+(use-package lua-mode
+  :ensure t)
+
 ;; Needs to me set not only in M-x shell :\
 ;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
 ;;(pinentry-start)
@@ -34,7 +40,11 @@
 (defvar global-font-height 140) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
 
-;; LOOK-N-FEEL ;;
+;; Desktop mode
+;;(setq desktop-path '("~/.cache/emacs/"))
+;;(desktop-save-mode 1)
+
+;; LOOK-N-FEEL
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
 (setq initial-scratch-message "")
@@ -71,8 +81,8 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-;;     (defvar global-font-face "Iosevka Type")
-     (defvar global-font-face "Fira Mono")
+     (defvar global-font-face "IosevkaCC Medium:style=Medium,Regular")
+;;     (defvar global-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -181,6 +191,9 @@
    '(".string().cstring()")
     nil
     "call .string() .cstring() at point")
+
+(use-package elixir-mode
+  :ensure t)
 
 (use-package ponylang-mode
   :ensure t
@@ -423,6 +436,7 @@
     ("C-c C-c" . comment-or-uncomment-region)
     ("C-c C-k" . clear-buffer-permenantly)
     ("C-c w" . delete-trailing-whitespace)
+    ("C-c v" . visual-line-mode)
     ("C-j" . newline)
     ("C-o C-o" . other-window)
     ("C-r" . isearch-backward-regexp)
@@ -454,7 +468,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
+    (tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk color-theme)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
@@ -463,9 +477,10 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(variable-pitch ((t (:weight semi-light :family "Fira Sans")))))
+ )
