@@ -2,9 +2,7 @@
 ;; Local lisp stuff
 (require 'subr-x)
 (require 'cl-lib)
-(add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
-
 
 ;; Packages
 (require 'package)
@@ -28,17 +26,7 @@
   (evil-mode 0))
 (global-set-key (kbd "<f4>") 'evil-mode)
 
-
 (use-package commentary-theme
-  :ensure t)
-
-(use-package tuareg
-  :ensure t)
-
-(use-package lua-mode
-  :ensure t)
-
-(use-package nginx-mode
   :ensure t)
 
 (use-package yaml-mode
@@ -46,8 +34,6 @@
   :init
   (add-hook 'yaml-mode-hook
             (lambda () (whitespace-mode 1))))
-
-
 
 (use-package markdown-mode
   :ensure t)
@@ -58,7 +44,6 @@
   (setq-default web-mode-markup-indent-offset 2)
   (setq-default web-mode-css-indent-offset 2)
   (setq-default web-mode-code-indent-offset 2))
-
 
 ;; Needs to me set not only in M-x shell :\
 ;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
@@ -176,14 +161,6 @@
 (use-package rainbow-delimiters
   :ensure t)
 
-(use-package w3m
-  :ensure t
-  :init
-  (add-hook 'w3m-mode-hook
-            (lambda ()
-              (local-set-key (kbd "]") 'w3m-tab-next-buffer)
-              (local-set-key (kbd "[") 'w3m-tab-previous-buffer))))
-
 (use-package column-enforce-mode
   :ensure t
   :init
@@ -197,16 +174,6 @@
   :config
   (which-key-mode 1))
 
-(use-package go-mode
-  :ensure t
-  :init
-  (add-hook 'before-save-hook #'gofmt-before-save)
-  (add-hook 'go-mode-hook #'flycheck-mode)
-)
-
-(use-package flycheck
-  :ensure t)
-
 (use-package erlang
   :ensure t
   :init
@@ -214,49 +181,9 @@
   (setq erlang-electric-commands '())
   (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
   (add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil))))
-(require 'slim-erlang) ;; Local erlang templates
-
-(tempo-define-template
-   "pony-printf"
-   '("@printf[I32](\"" (p "Format string: " fmt-string)  "\\n\".cstring())")
-    nil
-    "Insert a @printf call.")
-
-(tempo-define-template
-   "pony-stringify"
-   '(".string().cstring()")
-    nil
-    "call .string() .cstring() at point")
 
 (use-package elixir-mode
   :ensure t)
-
-
-;;(use-package js-mode
-  ;;  :ensure t ;; this is a built-in package
-;;  :init
-(add-hook
- 'js-mode-hook
- (lambda ()
-   (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
-   (column-enforce-mode 1)
-   (set-variable 'tab-width 2)))
-
-(use-package haskell-mode
-  :ensure t)
-
-(use-package ponylang-mode
-  :ensure t
-  :init
-  (add-hook 'ponylang-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c i") 'tempo-template-pony-printf)
-              (local-set-key (kbd "C-c u") 'tempo-template-pony-stringify)
-              (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
-              (column-enforce-mode 1)
-              ;(display-line-numbers-mode 1)
-              (set-variable 'indent-tabs-mode nil)
-              (set-variable 'tab-width 2))))
 
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
@@ -271,17 +198,9 @@
 (add-hook 'ansi-term-mode-hook
           #'disable-trailing-whitespace)
 
-
 ;; Sane regular expressions
 (require 're-builder)
 (setq reb-re-syntax 'string)
-
-;; FLYCHECK
-;(add-hook 'after-init-hook #'global-flycheck-mode)
-
-;; Haskell mode
-;;(Add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ;; EasyPG: GPG support (decrypt in buffer; save encrypted)
 (require 'epa-file)
