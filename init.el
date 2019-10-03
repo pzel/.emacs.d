@@ -20,10 +20,6 @@
 ;; Evil mode
 (add-to-list 'load-path "~/src/evil")
 (require 'evil)
-(progn
-  (evil-mode 1)
-  (global-undo-tree-mode 0)
-  (evil-mode 0))
 (global-set-key (kbd "<f4>") 'evil-mode)
 
 (use-package commentary-theme
