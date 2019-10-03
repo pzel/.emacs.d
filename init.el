@@ -5,6 +5,14 @@
 (add-to-list 'Info-default-directory-list "~/.emacs.d/_info/")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
 
+;; Evil mode
+(global-set-key (kbd "<f4>") 'evil-mode)
+;; Prevent evil mode from opening undo-tree
+(progn
+  (evil-mode 1)
+  (global-undo-tree-mode 0)
+  (evil-mode 0))
+
 ;; Packages
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
