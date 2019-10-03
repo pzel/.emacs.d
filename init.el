@@ -82,7 +82,7 @@
  ((eq window-system 'nil)
   (progn
     (require 'mouse)
-    (xclip-mode 1)
+    ;(xclip-mode 1)
     ;;(color-theme-initialize)
     ;;(color-theme-retro-orange) ;; set orange
     (global-font-lock-mode 0)    ;; disable dynamic highlighting
