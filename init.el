@@ -19,16 +19,14 @@
   (package-install 'use-package))
 (require 'use-package)
 
-(use-package evil
-  :ensure t)
-
 ;; Evil mode
-(global-set-key (kbd "<f4>") 'evil-mode)
-;; Prevent evil mode from opening undo-tree
+(add-to-list 'load-path "~/src/evil")
+(require 'evil)
 (progn
   (evil-mode 1)
   (global-undo-tree-mode 0)
   (evil-mode 0))
+(global-set-key (kbd "<f4>") 'evil-mode)
 
 
 (use-package commentary-theme
