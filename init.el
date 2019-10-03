@@ -19,7 +19,7 @@
   (package-install 'use-package))
 (require 'use-package)
 
-(use-package evil-mode
+(use-package evil
   :ensure t)
 
 ;; Evil mode
