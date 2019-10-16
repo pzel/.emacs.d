@@ -20,7 +20,14 @@
 ;; Evil mode
 (add-to-list 'load-path "~/src/evil")
 (require 'evil)
+;; Disable undo-tree
+(progn (evil-mode 1) (global-undo-tree-mode -1) (evil-mode -1))
 (global-set-key (kbd "<f4>") 'evil-mode)
+;; Make _ part of a word, like vim
+(modify-syntax-entry ?_ "w")
+(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+(define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
+(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
 
 (use-package commentary-theme
   :ensure t)
