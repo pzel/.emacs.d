@@ -378,7 +378,6 @@
     ("<f1>" . other-window)
     ("<f2>" . save-buffer)
     ("<f3>" . projectile-find-file)
-    ;; ("<f4>" . kill-buffer)
     ("<f5>" . refresh-buffer)
     ("<f6>" . electric-buffer-list)
     ("<f7>" . ispell-buffer)
