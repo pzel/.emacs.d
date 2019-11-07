@@ -48,19 +48,9 @@
   (setq-default web-mode-css-indent-offset 2)
   (setq-default web-mode-code-indent-offset 2))
 
-;; Needs to me set not only in M-x shell :\
-;;(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
-;;(pinentry-start)
-;; Authinfo
-;; (setq auth-sources '("~/.authinfo.gpg"))
-
 ;; My custom globals
-(defvar global-font-height 140) ;; use 140 on low-res screen
+(defvar global-font-height 120) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
-
-;; Desktop mode
-;;(setq desktop-path '("~/.cache/emacs/"))
-;;(desktop-save-mode 1)
 
 ;; LOOK-N-FEEL
 (ffap-bindings)
@@ -89,18 +79,14 @@
  ((eq window-system 'nil)
   (progn
     (require 'mouse)
-    ;(xclip-mode 1)
-    ;;(color-theme-initialize)
-    ;;(color-theme-retro-orange) ;; set orange
-    (global-font-lock-mode 0)    ;; disable dynamic highlighting
+    (global-font-lock-mode 0)
     (xterm-mouse-mode t)
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-;;     (defvar global-font-face "IosevkaCC Medium:style=Medium,Regular")
-     (defvar global-font-face "Fira Mono")
+     (defvar global-font-face "Go Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -109,9 +95,6 @@
      (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
      (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
-     ;;(set-background-color "#F6F4E5")
-     ;; (set-background-color "#FEFEFF")
-     ;; (set-background-color "#FEFEFF")
      (set-face-background 'trailing-whitespace "IndianRed1")
      (set-face-attribute 'fixed-pitch nil
                          :font global-font-face
@@ -231,14 +214,13 @@
 (global-set-key (kbd "M-o b") 'org-iswitchb)
 (global-set-key (kbd "M-o p") 'org-present)
 (global-set-key (kbd "<f8>") 'org-home)
+
 ;; ORG-PRESENT
 (autoload 'org-present "org-present" nil t)
 (load-file (expand-file-name "~/.emacs.d/lisp/org-present-hooks.el"))
 
 ;; IDO
 (setq ido-enable-flex-matching t)
-;;(setq ido-everywhere t)
-;;(ido-mode 1)
 
 ;; ISPELL
 (setq ispell-program-name "/usr/bin/hunspell")
@@ -246,8 +228,7 @@
 (setq ispell-hunspell-dict-paths-alist
       '(("polish" "/usr/share/hunspell/pl_PL.aff")
         ("pl_PL" "/usr/share/hunspell/pl_PL.aff")
-        ("en_US" "/usr/share/hunspell/en_US.aff")
- ))
+        ("en_US" "/usr/share/hunspell/en_US.aff")))
 
 ;; MODE BINDINGS
 (mapcar (lambda (pair)
@@ -309,7 +290,6 @@
    (lambda(x) (and x))
    (mapcar (lambda(m) (and (boundp m) (symbol-value m) m)) minor-mode-list)))
 
-
 ;; M-x shell tweaks
 (setq-default sh-basic-offset 2)
 (setq explicit-shell-file-name global-shell-location)
@@ -351,8 +331,6 @@
 (defun shell2 () (interactive) (shell-run "*shell-2*"))
 (defun shell3 () (interactive) (shell-run "*shell-3*"))
 
-
-
 (defun clear-buffer-permenantly ()
   "clear whole buffer, contents are not added to the kill ring"
   (interactive)
@@ -386,7 +364,7 @@
 ;; Keybindings
 ;; Unset obnoxious bindings
 (mapcar (lambda(key) (global-unset-key (kbd key)))
-  '("<f1>" "<f2>" "<f3>" "<f4>"
+  '("<f1>" "<f2>" "<f3>"
     "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
     "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
     "C-x m" "C-z"
@@ -400,7 +378,7 @@
     ("<f1>" . other-window)
     ("<f2>" . save-buffer)
     ("<f3>" . projectile-find-file)
-    ("<f4>" . kill-buffer)
+    ;; ("<f4>" . kill-buffer)
     ("<f5>" . refresh-buffer)
     ("<f6>" . electric-buffer-list)
     ("<f7>" . ispell-buffer)
