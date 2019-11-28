@@ -21,13 +21,18 @@
 (add-to-list 'load-path "~/src/evil")
 (require 'evil)
 ;; Disable undo-tree
-(progn (evil-mode 1) (global-undo-tree-mode -1) (evil-mode -1))
+;; (require undo-tree-mode)(require 'undo-tree)
+(progn (evil-mode 1) (evil-mode -1))
 (global-set-key (kbd "<f4>") 'evil-mode)
 ;; Make _ part of a word, like vim
 (modify-syntax-entry ?_ "w")
+(modify-syntax-entry ?= "w")
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
-(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
+(define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
+(define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
+(define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+;(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
 
 (use-package commentary-theme
   :ensure t)
@@ -36,7 +41,7 @@
   :ensure t
   :init
   (add-hook 'yaml-mode-hook
-            (lambda () (whitespace-mode 1))))
+            (lambda () (whitespace-mode 0))))
 
 (use-package markdown-mode
   :ensure t)
@@ -129,10 +134,10 @@
 ;; PROJECTILE-CONTROLLED MODES
 (use-package projectile
   :ensure t
-	:init
-	(setq projectile-tags-file-name "tags")
-	:config
-	(projectile-global-mode))
+  :init
+  (setq projectile-tags-file-name "tags")
+  :config
+  (projectile-global-mode))
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (use-package graphviz-dot-mode
@@ -165,11 +170,30 @@
   :init
   (setq erlang-indent-level 2)
   (setq erlang-electric-commands '())
-  (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
-  (add-hook 'elixir-mode-hook '(lambda() (setq indent-tabs-mode nil))))
+  (add-hook 'erlang-mode-hook '(lambda()
+                                 (setq indent-tabs-mode nil)
+                                 (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+                                 (column-enforce-mode 1)
+                                 (display-line-numbers-mode 1))))
+
+(use-package elm-mode
+  :ensure t
+  :init
+  (add-hook 'elm-mode-hook
+            '(lambda()
+               (display-line-numbers-mode 1))))
+
 
 (use-package elixir-mode
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'before-save-hook
+            '(lambda() (whitespace-cleanup)))
+  (add-hook 'elixir-mode-hook
+            '(lambda()
+               (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+               (column-enforce-mode 1)
+               (display-line-numbers-mode 1))))
 
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
@@ -248,6 +272,7 @@
     ("Rakefile$" . ruby-mode)
 ;    (".md$" . markdown-mode)
     ("\\.html?\\'" . web-mode)
+    ("\\.html.eex\\'" . web-mode)
     ("\\.css?\\'" . web-mode)
     (".pug$" . javascript-mode)
     ))
@@ -304,6 +329,14 @@
         'shell-eol-and-insert)
       (global-unset-key (kbd "C-x C-x"))))
 
+;; move cursor to the end when switching to shell
+(add-hook 'buffer-list-update-hook
+          (lambda()
+            (if (string-match "*shell-" (buffer-name (current-buffer)))
+                (goto-char (point-max))
+              t)))
+
+(setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
 (setenv "NODE_NO_READLINE" "1")
 (setenv "EDITOR" "emx")
 (setenv "PAGER" "cat")
@@ -343,7 +376,9 @@
         (mm (active-minor-modes)))
     (normal-mode)
     (funcall v)
-    (mapcar 'funcall mm)))
+    (mapcar 'funcall mm)
+    (revert-buffer nil t)))
+
 
 (defun global-font-size-bigger ()
   (interactive)
@@ -362,47 +397,47 @@
   (insert (format-time-string "%Y-%m-%dT%H:%M")))
 
 ;; Keybindings
-;; Unset obnoxious bindings
-(mapcar (lambda(key) (global-unset-key (kbd key)))
-  '("<f1>" "<f2>" "<f3>"
-    "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
-    "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
-    "C-x m" "C-z"
-    "M-`"
-    ))
-
-;; Set custom keybindings
-(mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
-					  (cdr key-bind)))
-  `(
-    ("<f1>" . other-window)
-    ("<f2>" . save-buffer)
-    ("<f3>" . projectile-find-file)
-    ("<f5>" . refresh-buffer)
-    ("<f6>" . electric-buffer-list)
-    ("<f7>" . ispell-buffer)
-    ;; ("<up>" . scroll-down-command)
-    ;; ("<down>" . scroll-up-command)
-    ("C-+" . global-font-size-bigger)
-    ("C--" . global-font-size-smaller)
-    ("C-c C-c" . comment-or-uncomment-region)
-    ("C-c C-k" . clear-buffer-permenantly)
-    ("C-c w" . delete-trailing-whitespace)
-    ("C-c v" . visual-line-mode)
-    ("C-j" . newline)
-    ("C-o C-o" . other-window)
-    ("C-r" . isearch-backward-regexp)
-    ("C-s" . isearch-forward-regexp)
-    ("C-x C-b" . electric-buffer-list)
-    ("C-x C-m" . compile)
-    ("C-x C-r" . ffap-other-window)
-    ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
-    ("M-`" . other-window)
-    ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
-    ("M-RET" . shell1)
-    ("M-g" . goto-line)
-    ("M-o d" . insert-current-datetime)
-    ))
+;; UNMAP UNWANTED KEYBINDINGS
+(progn
+  (mapcar (lambda(key) (global-unset-key (kbd key)))
+          '("<f1>" "<f2>" "<f3>"
+            "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
+            "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
+            "C-x m" "C-z"
+            "M-`" "<C-down-mouse-1>"
+            ))
+  ;; Set custom keybindings
+  (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
+                                            (cdr key-bind)))
+          `(
+            ("<f1>" . other-window)
+            ("<f2>" . save-buffer)
+            ("<f3>" . projectile-find-file)
+            ("<f5>" . refresh-buffer)
+            ("<f6>" . electric-buffer-list)
+            ("<f7>" . ispell-buffer)
+            ;; ("<up>" . scroll-down-command)
+            ;; ("<down>" . scroll-up-command)
+            ("C-+" . global-font-size-bigger)
+            ("C--" . global-font-size-smaller)
+            ("C-c C-c" . comment-or-uncomment-region)
+            ("C-c C-k" . clear-buffer-permenantly)
+            ("C-c w" . delete-trailing-whitespace)
+            ("C-c v" . visual-line-mode)
+            ("C-j" . newline)
+            ("C-o C-o" . other-window)
+            ("C-r" . isearch-backward-regexp)
+            ("C-s" . isearch-forward-regexp)
+            ("C-x C-b" . electric-buffer-list)
+            ("C-x C-m" . compile)
+            ("C-x C-r" . ffap-other-window)
+            ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
+            ("M-`" . other-window)
+            ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
+            ("M-RET" . shell1)
+            ("M-g" . goto-line)
+            ("M-o d" . insert-current-datetime)
+            )))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -420,7 +455,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (evil flycheck go-mode haskell-emacs js-mode green-phosphor-theme green-screen-theme green-is-the-new-black-theme constant-theme grayscale-theme inverse-acme-theme abyss-theme tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk)))
+    (flycheck-golangci-lint toml-mode evil flycheck go-mode haskell-emacs js-mode green-phosphor-theme green-screen-theme green-is-the-new-black-theme constant-theme grayscale-theme inverse-acme-theme abyss-theme tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
