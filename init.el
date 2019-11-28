@@ -473,7 +473,6 @@
     ("M-g" . goto-line)
     ("M-o d" . insert-current-datetime)
     ))
->>>>>>> Stashed changes
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
