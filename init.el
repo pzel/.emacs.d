@@ -54,7 +54,7 @@
   (setq-default web-mode-code-indent-offset 2))
 
 ;; My custom globals
-(defvar global-font-height 120) ;; use 140 on low-res screen
+(defvar pzel-font-height 120) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
 
 ;; LOOK-N-FEEL
@@ -91,7 +91,7 @@
     (defvar global-shell-location "/bin/bash")))
   ((eq (symbol-value 'window-system) 'x)
    (progn
-     (defvar global-font-face "Go Mono")
+     (defvar pzel-font-face "Go Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -102,25 +102,25 @@
      (setq-default mouse-autoselect-window t)
      (set-face-background 'trailing-whitespace "IndianRed1")
      (set-face-attribute 'fixed-pitch nil
-                         :font global-font-face
-                         :height global-font-height)
+                         :font pzel-font-face
+                         :height pzel-font-height)
      (set-face-attribute 'default nil
-                         :font global-font-face
-                         :height global-font-height)
+                         :font pzel-font-face
+                         :height pzel-font-height)
      (set-frame-size (selected-frame) 100 25)
      (fringe-mode '(1 . 1))
      (load-theme 'commentary t)
      (setq-default os-open-command "xdg-open")))
   ((eq window-system 'ns)
    (progn
-     (defvar global-font-face "Iosevka Term")
+     (defvar pzel-font-face "Iosevka Term")
      (defvar global-shell-location "/opt/pkg/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
      (tool-bar-mode -1)
      (setq-default mouse-autoselect-window t)
      (set-face-background 'trailing-whitespace "IndianRed1")
-     (set-face-attribute 'default nil :font global-font-face :height global-font-height)
+     (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
      (set-frame-size (selected-frame) 100 25)
      (fringe-mode '(1 . 1))
      (load-theme 'commentary t)
@@ -380,17 +380,17 @@
     (revert-buffer nil t)))
 
 
-(defun global-font-size-bigger ()
+(defun pzel-font-size-bigger ()
   (interactive)
-  (setq global-font-height (+ global-font-height 10))
-  (set-face-attribute 'default nil :font global-font-face :height global-font-height)
-  (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
+  (setq pzel-font-height (+ pzel-font-height 10))
+  (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
+  (set-face-attribute 'fixed-pitch nil :font pzel-font-face :height pzel-font-height))
 
-(defun global-font-size-smaller ()
+(defun pzel-font-size-smaller ()
   (interactive)
-  (setq global-font-height (- global-font-height 10))
-  (set-face-attribute 'default nil :font global-font-face :height global-font-height)
-  (set-face-attribute 'fixed-pitch nil :font global-font-face :height global-font-height))
+  (setq pzel-font-height (- pzel-font-height 10))
+  (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
+  (set-face-attribute 'fixed-pitch nil :font pzel-font-face :height pzel-font-height))
 
 (defun insert-current-datetime ()
   (interactive)
@@ -438,6 +438,42 @@
             ("M-g" . goto-line)
             ("M-o d" . insert-current-datetime)
             )))
+
+;; Set custom keybindings
+(mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
+            (cdr key-bind)))
+  `(
+    ("<f1>" . other-window)
+    ("<f2>" . save-buffer)
+    ("<f3>" . projectile-find-file)
+    ;; ("<f4>" . kill-buffer)
+    ("<f5>" . refresh-buffer)
+    ("<f6>" . electric-buffer-list)
+    ("<f7>" . ispell-buffer)
+    ;; ("<up>" . scroll-down-command)
+    ;; ("<down>" . scroll-up-command)
+    ("C-+" . pzel-font-size-bigger)
+    ("C--" . pzel-font-size-smaller)
+    ("C-c C-c" . comment-or-uncomment-region)
+    ("C-c C-k" . clear-buffer-permenantly)
+    ("C-c w" . delete-trailing-whitespace)
+    ("C-c v" . visual-line-mode)
+    ("C-j" . newline)
+    ("C-o C-o" . other-window)
+    ("C-r" . isearch-backward-regexp)
+    ("C-s" . isearch-forward-regexp)
+    ("C-x C-b" . electric-buffer-list)
+    ("C-x C-m" . compile)
+    ("C-x C-r" . ffap-other-window)
+    ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
+    ("M-`" . other-window)
+    ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
+    ("M-4" . pzel-term)
+    ("M-RET" . shell1)
+    ("M-g" . goto-line)
+    ("M-o d" . insert-current-datetime)
+    ))
+>>>>>>> Stashed changes
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
