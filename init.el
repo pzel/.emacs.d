@@ -21,18 +21,15 @@
 (add-to-list 'load-path "~/src/evil")
 (require 'evil)
 ;; Disable undo-tree
-;; (require undo-tree-mode)(require 'undo-tree)
-(progn (evil-mode 1) (evil-mode -1))
+(require 'undo-tree)(setq-default undo-tree-mode nil)
+(progn (evil-mode 1) (global-undo-tree-mode 0)(evil-mode -1))
 (global-set-key (kbd "<f4>") 'evil-mode)
 ;; Make _ part of a word, like vim
-(modify-syntax-entry ?_ "w")
-(modify-syntax-entry ?= "w")
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
-;(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
 
 (use-package commentary-theme
   :ensure t)
@@ -46,12 +43,20 @@
 (use-package markdown-mode
   :ensure t)
 
+(use-package visual-fill-column
+  :ensure t)
+
 (use-package web-mode
   :ensure t
   :init
   (setq-default web-mode-markup-indent-offset 2)
   (setq-default web-mode-css-indent-offset 2)
   (setq-default web-mode-code-indent-offset 2))
+
+(use-package dumb-jump
+  :ensure t
+  :init
+  (dumb-jump-mode))
 
 ;; My custom globals
 (defvar pzel-font-height 120) ;; use 140 on low-res screen
@@ -82,6 +87,7 @@
 
 (cond
  ((eq window-system 'nil)
+  ;; TERMINAL
   (progn
     (require 'mouse)
     (global-font-lock-mode 0)
@@ -89,7 +95,9 @@
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
     (defvar global-shell-location "/bin/bash")))
+
   ((eq (symbol-value 'window-system) 'x)
+   ;; XORG
    (progn
      (defvar pzel-font-face "Go Mono")
      (defvar global-shell-location "/bin/bash")
@@ -101,6 +109,7 @@
      (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
      (set-face-background 'trailing-whitespace "IndianRed1")
+     (set-face-background 'default "floral white")
      (set-face-attribute 'fixed-pitch nil
                          :font pzel-font-face
                          :height pzel-font-height)
@@ -111,7 +120,9 @@
      (fringe-mode '(1 . 1))
      (load-theme 'commentary t)
      (setq-default os-open-command "xdg-open")))
+
   ((eq window-system 'ns)
+   ;; MAC OS
    (progn
      (defvar pzel-font-face "Iosevka Term")
      (defvar global-shell-location "/opt/pkg/bin/bash")
@@ -188,16 +199,29 @@
   :ensure t
   :init
   (add-hook 'before-save-hook
-            '(lambda() (whitespace-cleanup)))
+            '(lambda()
+               (if (eq major-mode 'elixir-mode)
+                   (whitespace-cleanup))))
   (add-hook 'elixir-mode-hook
             '(lambda()
                (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
                (column-enforce-mode 1)
                (display-line-numbers-mode 1))))
 
+(add-hook 'java-mode-hook
+          '(lambda()
+             (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+             (display-line-numbers-mode 1)))
+
+
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
           '(lambda () (local-unset-key (kbd "C-c C-c"))))
+
+;; Visual-wrap lines in text mode (and org mode)
+;; with visual-fill-column, this is wrapped to `fill-column`
+(add-hook 'text-mode-hook
+          #'visual-line-mode)
 
 ;; Disable dangling space hilight in term mode
 (defun disable-trailing-whitespace()
@@ -490,7 +514,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (flycheck-golangci-lint toml-mode evil flycheck go-mode haskell-emacs js-mode green-phosphor-theme green-screen-theme green-is-the-new-black-theme constant-theme grayscale-theme inverse-acme-theme abyss-theme tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk)))
+    (visual-fill-column java-mode dumb-jump flycheck-golangci-lint toml-mode evil flycheck go-mode haskell-emacs js-mode green-phosphor-theme green-screen-theme green-is-the-new-black-theme constant-theme grayscale-theme inverse-acme-theme abyss-theme tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk)))
  '(safe-local-variable-values
    (quote
     ((encoding . utf-8)
