@@ -20,16 +20,35 @@
 ;; Evil mode
 (add-to-list 'load-path "~/src/evil")
 (require 'evil)
-;; Disable undo-tree
-(require 'undo-tree)(setq-default undo-tree-mode nil)
-(progn (evil-mode 1) (global-undo-tree-mode 0)(evil-mode -1))
+
+(ignore-errors
+  ;; Disable undo-tree
+  (progn	
+    (require 'undo-tree)
+    (setq-default undo-tree-mode nil)
+    (evil-mode 1)
+    (global-undo-tree-mode 0)
+    (evil-mode -1)))
+    
 (global-set-key (kbd "<f4>") 'evil-mode)
-;; Make _ part of a word, like vim
+(defun noop() (interactive) (lambda()))
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
 (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+(define-key evil-insert-state-map (kbd "<left>") 'noop)
+(define-key evil-insert-state-map (kbd "<right>") 'noop)
+(define-key evil-normal-state-map (kbd "<up>") 'noop)
+(define-key evil-normal-state-map (kbd "<down>") 'noop)
+(define-key evil-normal-state-map (kbd "<left>") 'noop)
+(define-key evil-normal-state-map (kbd "<right>") 'noop)
+;;(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
+
+(use-package dumb-jump
+  :ensure t
+  :init
+  (dumb-jump-mode t))
 
 (use-package commentary-theme
   :ensure t)
@@ -84,6 +103,7 @@
 (setq-default display-buffer-alist
               '(("*shell-?*" (display-buffer-reuse-window
                               display-buffer-same-window))))
+(setq-default uniquify-buffer-name-style 'forward)
 
 (cond
  ((eq window-system 'nil)
@@ -269,6 +289,7 @@
 
 ;; IDO
 (setq ido-enable-flex-matching t)
+
 
 ;; ISPELL
 (setq ispell-program-name "/usr/bin/hunspell")
@@ -503,30 +524,5 @@
   '(defun enriched-decode-display-prop (start end &optional param)
      (list start end)))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("ae3a3bed17b28585ce84266893fa3a4ef0d7d721451c887df5ef3e24a9efef8c" "08a89acffece58825e75479333109e01438650d27661b29212e6560070b156cf" "ba913d12adb68e9dadf1f43e6afa8e46c4822bb96a289d5bf1204344064f041e" "8150ded55351553f9d143c58338ebbc582611adc8a51946ca467bd6fa35a1075" "39546362fed4d5201b2b386dc21f21439497c9eec5fee323d953b3e230e4083e" "d8dc153c58354d612b2576fea87fe676a3a5d43bcc71170c62ddde4a1ad9e1fb" "08fd3e64e02db1cf1b3dc79296df1e77e104f208ef897dc0c1b4e0112e1b50de" "5d139820639cd941c60033dcdd462bf5fffa76da549e6bdf1d83945803d30f01" "630a574f8383a372b2dd51d92176ac255029067ebefb760f7dba5cdb7f8be30c" "cd95da9e526850b3df2d1b58410d586386bfc0182a2aaca3f33d6cd8548c091a" "3539b3cc5cbba41609117830a79f71309a89782f23c740d4a5b569935f9b7726" "dba244449b15bdc6a3236f45cec7c2cb03de0f5cf5709a01158a278da86cb69b" "9c22be8846bce5d64c803b1f7f4051f0675ba7c0eb492e03a17bb765b0a35d82" "50bfaa1e09c73a6832a4178812ca76ec673ba94f022bdea885dc679d4f472580" "6eaebdc2426b0edfff9fd9a7610f2fe7ddc70e01ceb869aaaf88b5ebe326a0cd" default)))
- '(indent-tabs-mode nil)
- '(package-selected-packages
-   (quote
-    (visual-fill-column java-mode dumb-jump flycheck-golangci-lint toml-mode evil flycheck go-mode haskell-emacs js-mode green-phosphor-theme green-screen-theme green-is-the-new-black-theme constant-theme grayscale-theme inverse-acme-theme abyss-theme tuareg xclip j-mode forth-mode color-theme-initialize w3m rainbow-delimiters python-mode erlang which-key ripgrep pinentry sqlformat rust-mode nginx-mode typit typing-game use-package commentary-theme package-lint ag flycheck-pony ponylang-mode pdf-tools eww-lnum w3 restclient sql-indent web-mode-edit-element web-mode graphviz-dot-mode elm-mode roguel-ike twittering-mode fuel elixir-mode fsharp-mode floobits lua-mode thrift protobuf-mode yaml-mode projectile org-present org-pomodoro ocp-indent markdown-mode ledger-mode haskell-mode grizzl flx-ido evil-vimish-fold ddskk)))
- '(safe-local-variable-values
-   (quote
-    ((encoding . utf-8)
-     (web-mode-engines-alist quote
-                             (("django" . "\\.html\\'")))))))
-
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
