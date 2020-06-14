@@ -3,6 +3,7 @@
 (require 'subr-x)
 (require 'cl-lib)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+(require 'k-mode)
 
 ;; Packages
 (require 'package)
@@ -23,13 +24,13 @@
 
 (ignore-errors
   ;; Disable undo-tree
-  (progn	
+  (progn
     (require 'undo-tree)
     (setq-default undo-tree-mode nil)
     (evil-mode 1)
     (global-undo-tree-mode 0)
     (evil-mode -1)))
-    
+
 (global-set-key (kbd "<f4>") 'evil-mode)
 (defun noop() (interactive) (lambda()))
 (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
@@ -44,6 +45,11 @@
 (define-key evil-normal-state-map (kbd "<left>") 'noop)
 (define-key evil-normal-state-map (kbd "<right>") 'noop)
 ;;(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
+
+(use-package magit
+  :ensure t
+  :init
+  (global-set-key (kbd "C-x g") 'magit-status))
 
 (use-package dumb-jump
   :ensure t
@@ -119,7 +125,7 @@
   ((eq (symbol-value 'window-system) 'x)
    ;; XORG
    (progn
-     (defvar pzel-font-face "Go Mono")
+     (defvar pzel-font-face "Fira Mono")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
@@ -408,7 +414,6 @@
 (defun shell1 () (interactive) (shell-run "*shell-1*"))
 (defun shell2 () (interactive) (shell-run "*shell-2*"))
 (defun shell3 () (interactive) (shell-run "*shell-3*"))
-
 (defun clear-buffer-permenantly ()
   "clear whole buffer, contents are not added to the kill ring"
   (interactive)
@@ -461,8 +466,6 @@
             ("<f5>" . refresh-buffer)
             ("<f6>" . electric-buffer-list)
             ("<f7>" . ispell-buffer)
-            ;; ("<up>" . scroll-down-command)
-            ;; ("<down>" . scroll-up-command)
             ("C-+" . global-font-size-bigger)
             ("C--" . global-font-size-smaller)
             ("C-c C-c" . comment-or-uncomment-region)
@@ -481,43 +484,7 @@
             ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
             ("M-RET" . shell1)
             ("M-g" . goto-line)
-            ("M-o d" . insert-current-datetime)
-            )))
-
-;; Set custom keybindings
-(mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
-            (cdr key-bind)))
-  `(
-    ("<f1>" . other-window)
-    ("<f2>" . save-buffer)
-    ("<f3>" . projectile-find-file)
-    ;; ("<f4>" . kill-buffer)
-    ("<f5>" . refresh-buffer)
-    ("<f6>" . electric-buffer-list)
-    ("<f7>" . ispell-buffer)
-    ;; ("<up>" . scroll-down-command)
-    ;; ("<down>" . scroll-up-command)
-    ("C-+" . pzel-font-size-bigger)
-    ("C--" . pzel-font-size-smaller)
-    ("C-c C-c" . comment-or-uncomment-region)
-    ("C-c C-k" . clear-buffer-permenantly)
-    ("C-c w" . delete-trailing-whitespace)
-    ("C-c v" . visual-line-mode)
-    ("C-j" . newline)
-    ("C-o C-o" . other-window)
-    ("C-r" . isearch-backward-regexp)
-    ("C-s" . isearch-forward-regexp)
-    ("C-x C-b" . electric-buffer-list)
-    ("C-x C-m" . compile)
-    ("C-x C-r" . ffap-other-window)
-    ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
-    ("M-`" . other-window)
-    ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
-    ("M-4" . pzel-term)
-    ("M-RET" . shell1)
-    ("M-g" . goto-line)
-    ("M-o d" . insert-current-datetime)
-    ))
+            ("M-o d" . insert-current-datetime))))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -526,3 +493,17 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (magit spark yaml-mode xclip which-key web-mode w3m visual-fill-column use-package tuareg roguel-ike rainbow-delimiters projectile ponylang-mode nginx-mode markdown-mode lua-mode inverse-acme-theme haskell-mode haskell-emacs green-screen-theme green-phosphor-theme green-is-the-new-black-theme grayscale-theme graphviz-dot-mode go-mode flycheck evil erlang elm-mode elixir-mode dumb-jump constant-theme commentary-theme column-enforce-mode abyss-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
