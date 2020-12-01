@@ -1,0 +1,25 @@
+;; Evil mode
+(add-to-list 'load-path "~/src/evil")
+(require 'evil)
+'(ignore-errors
+  ;; Disable undo-tree
+  (progn
+    (global-set-key (kbd "<f4>") 'evil-mode)
+    (defun noop() (interactive) (lambda()))
+    (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
+    (define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
+    (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
+    (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
+    (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+    (define-key evil-insert-state-map (kbd "<left>") 'noop)
+    (define-key evil-insert-state-map (kbd "<right>") 'noop)
+    (define-key evil-normal-state-map (kbd "<up>") 'noop)
+    (define-key evil-normal-state-map (kbd "<down>") 'noop)
+    (define-key evil-normal-state-map (kbd "<left>") 'noop)
+    (define-key evil-normal-state-map (kbd "<right>") 'noop)
+    (define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
+    (require 'undo-tree)
+    (setq-default undo-tree-mode nil)
+    (evil-mode 1)
+    (global-undo-tree-mode 0)
+    (evil-mode -1)))

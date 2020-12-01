@@ -1,9 +1,8 @@
 ;; PATHS
 ;; Local lisp stuff
 (require 'subr-x)
-(require 'cl-lib)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
-(require 'k-mode)
+;(require 'k-mode)
 
 ;; Packages
 (require 'package)
@@ -18,74 +17,87 @@
   (package-install 'use-package))
 (require 'use-package)
 
-;; Evil mode
-(add-to-list 'load-path "~/src/evil")
-(require 'evil)
-
-(ignore-errors
-  ;; Disable undo-tree
-  (progn
-    (require 'undo-tree)
-    (setq-default undo-tree-mode nil)
-    (evil-mode 1)
-    (global-undo-tree-mode 0)
-    (evil-mode -1)))
-
-(global-set-key (kbd "<f4>") 'evil-mode)
-(defun noop() (interactive) (lambda()))
-(define-key evil-normal-state-map (kbd "C-p") 'projectile-find-file)
-(define-key evil-motion-state-map (kbd "C-p") 'projectile-find-file)
-(define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
-(define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-(define-key evil-insert-state-map (kbd "C-k") 'kill-line)
-(define-key evil-insert-state-map (kbd "<left>") 'noop)
-(define-key evil-insert-state-map (kbd "<right>") 'noop)
-(define-key evil-normal-state-map (kbd "<up>") 'noop)
-(define-key evil-normal-state-map (kbd "<down>") 'noop)
-(define-key evil-normal-state-map (kbd "<left>") 'noop)
-(define-key evil-normal-state-map (kbd "<right>") 'noop)
-;;(define-key evil-normal-state-map (kbd "b") 'projectile-switch-to-buffer)
-
-(use-package magit
-  :ensure t
+(use-package magit :ensure t
   :init
   (global-set-key (kbd "C-x g") 'magit-status))
 
-(use-package dumb-jump
-  :ensure t
+(use-package dumb-jump :ensure t
   :init
   (dumb-jump-mode t))
 
-(use-package commentary-theme
-  :ensure t)
+(use-package commentary-theme :ensure t)
 
-(use-package yaml-mode
-  :ensure t
+(use-package yaml-mode :ensure t
   :init
   (add-hook 'yaml-mode-hook
             (lambda () (whitespace-mode 0))))
 
-(use-package markdown-mode
-  :ensure t)
+(use-package visual-fill-column :ensure t)
 
-(use-package visual-fill-column
-  :ensure t)
-
-(use-package web-mode
-  :ensure t
+(use-package web-mode :ensure t
   :init
   (setq-default web-mode-markup-indent-offset 2)
   (setq-default web-mode-css-indent-offset 2)
   (setq-default web-mode-code-indent-offset 2))
 
-(use-package dumb-jump
-  :ensure t
+(use-package projectile :ensure t
   :init
-  (dumb-jump-mode))
+  (setq projectile-tags-file-name "tags")
+  :config
+  (projectile-global-mode))
+
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+(use-package graphviz-dot-mode :ensure t
+  :init
+  (add-hook 'graphviz-dot-mode-hook
+            (lambda ()
+              (local-unset-key (kbd "RET")
+              (local-unset-key (kbd ";"))))))
+
+(use-package rainbow-delimiters :ensure t)
+
+(use-package column-enforce-mode :ensure t
+  :init
+  (setq column-enforce-column 80))
+
+(use-package which-key :ensure t
+  :init
+  (setq which-key-separator " ")
+  (setq which-key-prefix-prefix "+")
+  :config
+  (which-key-mode 1))
+
+(use-package erlang :ensure t
+  :init
+  (setq erlang-indent-level 2)
+  (setq erlang-electric-commands '())
+  (add-hook 'erlang-mode-hook '(lambda()
+                                 (setq indent-tabs-mode nil)
+                                 (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+                                 (column-enforce-mode 1)
+                                 (display-line-numbers-mode 1))))
+
+(use-package elm-mode :ensure t
+  :init
+  (add-hook 'elm-mode-hook '(lambda() (display-line-numbers-mode 1))))
+
+(use-package elixir-mode :ensure t
+  :init
+  (add-hook 'before-save-hook
+            '(lambda() (if (eq major-mode 'elixir-mode) (whitespace-cleanup))))
+  (add-hook 'elixir-mode-hook
+            '(lambda()
+               (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
+               (column-enforce-mode 1)
+               (display-line-numbers-mode nil))))
 
 ;; My custom globals
 (defvar pzel-font-height 120) ;; use 140 on low-res screen
 (defvar original-mode-line-format mode-line-format)
+
+;; erc: hide noise in channel
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
 ;; LOOK-N-FEEL
 (ffap-bindings)
@@ -112,25 +124,23 @@
 (setq-default uniquify-buffer-name-style 'forward)
 
 (cond
- ((eq window-system 'nil)
-  ;; TERMINAL
+ ((eq window-system 'nil)  ;; TERMINAL
   (progn
     (require 'mouse)
     (global-font-lock-mode 0)
     (xterm-mouse-mode t)
+    (xclip-mode t)
     (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
     (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
     (defvar global-shell-location "/bin/bash")))
-
-  ((eq (symbol-value 'window-system) 'x)
-   ;; XORG
+  ((eq (symbol-value 'window-system) 'x)    ;; XORG
    (progn
      (defvar pzel-font-face "Fira Mono")
+     (defvar pzel-variable-font-face "Fira Sans Light")
      (defvar global-shell-location "/bin/bash")
      (setq-default scroll-bar-mode-explicit t)
      (scroll-bar-mode -1)
      (tool-bar-mode -1)
-     ;; these two lines make touchpad scrolling usable
      (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
      (setq mouse-wheel-progressive-speed nil)
      (setq-default mouse-autoselect-window t)
@@ -142,103 +152,47 @@
      (set-face-attribute 'default nil
                          :font pzel-font-face
                          :height pzel-font-height)
+     (set-face-attribute 'variable-pitch nil
+                         :font pzel-variable-font-face
+                         :height pzel-font-height)
      (set-frame-size (selected-frame) 100 25)
      (fringe-mode '(1 . 1))
      (load-theme 'commentary t)
-     (setq-default os-open-command "xdg-open")))
-
-  ((eq window-system 'ns)
-   ;; MAC OS
-   (progn
-     (defvar pzel-font-face "Iosevka Term")
-     (defvar global-shell-location "/opt/pkg/bin/bash")
-     (setq-default scroll-bar-mode-explicit t)
-     (scroll-bar-mode -1)
-     (tool-bar-mode -1)
-     (setq-default mouse-autoselect-window t)
-     (set-face-background 'trailing-whitespace "IndianRed1")
-     (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
-     (set-frame-size (selected-frame) 100 25)
-     (fringe-mode '(1 . 1))
-     (load-theme 'commentary t)
-     (setq shell-command-switch "-lc")
-     (setq-default os-open-command "open"))))
-
+     (setq-default os-open-command "xdg-open"))))
 
 ;; INDENTS
 (setq-default elm-indent-offset 2)
 
-;; PROJECTILE-CONTROLLED MODES
-(use-package projectile
-  :ensure t
-  :init
-  (setq projectile-tags-file-name "tags")
-  :config
-  (projectile-global-mode))
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;; Elfeed
+(defun pzel-refresh-elfeed-feeds ()
+  (interactive)
+  (setq elfeed-feeds
+        (with-temp-buffer
+          (insert-file-contents "~/.newsboat/urls")
+          (split-string (buffer-string) "\n" t))))
+(pzel-refresh-elfeed-feeds)
 
-(use-package graphviz-dot-mode
-  :ensure t
-  :init
-  (add-hook 'graphviz-dot-mode-hook
-            (lambda ()
-              (local-unset-key (kbd "RET")
-              (local-unset-key (kbd ";"))))))
+;; EWW as default browser
+(setq shr-inhibit-images t)
+(setq browse-url-browser-function 'eww-browse-url)
+(add-hook 'eww-mode-hook
+          #'disable-trailing-whitespace)
 
+;; Electric buffer list
+(add-hook 'electric-buffer-menu-mode-hook
+          #'disable-trailing-whitespace)
 
-(use-package rainbow-delimiters
-  :ensure t)
+(defun sudo-find-file (file-name)
+  "Like find file, but opens the file as root."
+  (interactive "FSudo Find File: ")
+  (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
+    (find-file tramp-file-name)))
 
-(use-package column-enforce-mode
-  :ensure t
-  :init
-  (setq column-enforce-column 80))
-
-(use-package which-key
-  :ensure t
-  :init
-  (setq which-key-separator " ")
-  (setq which-key-prefix-prefix "+")
-  :config
-  (which-key-mode 1))
-
-(use-package erlang
-  :ensure t
-  :init
-  (setq erlang-indent-level 2)
-  (setq erlang-electric-commands '())
-  (add-hook 'erlang-mode-hook '(lambda()
-                                 (setq indent-tabs-mode nil)
-                                 (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
-                                 (column-enforce-mode 1)
-                                 (display-line-numbers-mode 1))))
-
-(use-package elm-mode
-  :ensure t
-  :init
-  (add-hook 'elm-mode-hook
-            '(lambda()
-               (display-line-numbers-mode 1))))
-
-
-(use-package elixir-mode
-  :ensure t
-  :init
-  (add-hook 'before-save-hook
-            '(lambda()
-               (if (eq major-mode 'elixir-mode)
-                   (whitespace-cleanup))))
-  (add-hook 'elixir-mode-hook
-            '(lambda()
-               (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
-               (column-enforce-mode 1)
-               (display-line-numbers-mode 1))))
 
 (add-hook 'java-mode-hook
           '(lambda()
              (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
              (display-line-numbers-mode 1)))
-
 
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
@@ -246,17 +200,16 @@
 
 ;; Visual-wrap lines in text mode (and org mode)
 ;; with visual-fill-column, this is wrapped to `fill-column`
-(add-hook 'text-mode-hook
-          #'visual-line-mode)
+(add-hook 'text-mode-hook #'visual-line-mode)
 
 ;; Disable dangling space hilight in term mode
 (defun disable-trailing-whitespace()
     (setq show-trailing-whitespace nil))
 
-(add-hook 'term-mode-hook
-          #'disable-trailing-whitespace)
-(add-hook 'ansi-term-mode-hook
-          #'disable-trailing-whitespace)
+(add-hook 'term-mode-hook #'disable-trailing-whitespace)
+(add-hook 'ansi-term-mode-hook #'disable-trailing-whitespace)
+(add-hook 'elpher-mode-hook
+          (lambda() (disable-trailing-whitespace) (local-unset-key (kbd "q"))))
 
 ;; Sane regular expressions
 (require 're-builder)
@@ -296,7 +249,6 @@
 ;; IDO
 (setq ido-enable-flex-matching t)
 
-
 ;; ISPELL
 (setq ispell-program-name "/usr/bin/hunspell")
 (setq ispell-dictionary "en_US")
@@ -308,25 +260,13 @@
 ;; MODE BINDINGS
 (mapcar (lambda (pair)
     (add-to-list 'auto-mode-alist pair))
-  '(
-    (".spec$" . erlang-mode)
-    ("rebar.config$" . erlang-mode)
-    ("reltool.config$" . erlang-mode)
-    (".app.src$" . erlang-mode)
-    (".pde$" . java-mode)
-    ("\\.sxml$" . scheme-mode)
-    (".sld$" . scheme-mode)
-    (".lfe$" . scheme-mode)
-    ("\\.org\\.gpg$" . org-mode)
+  '(("\\.org\\.gpg$" . org-mode)
     ("\\.org\\.gpg\\.asc$" . org-mode)
     ("Gemfile$" . ruby-mode)
     ("Rakefile$" . ruby-mode)
-;    (".md$" . markdown-mode)
     ("\\.html?\\'" . web-mode)
     ("\\.html.eex\\'" . web-mode)
-    ("\\.css?\\'" . web-mode)
-    (".pug$" . javascript-mode)
-    ))
+    ("\\.css?\\'" . web-mode)))
 
 ;; TEXT FORMATTING ;;
 (setq-default bidi-display-reordering nil)
@@ -347,7 +287,6 @@
 (add-hook 'makefile-mode-hook
     (lambda()
       (setq indent-tabs-mode t)
-;;      (whitespace-mode 1)
       (setq tab-width 8)))
 
 ;; No emacs poo files
@@ -429,18 +368,25 @@
     (mapcar 'funcall mm)
     (revert-buffer nil t)))
 
+(defun pzel--font-resize ()
+  (mapcar
+   (lambda (face-font)
+     (set-face-attribute (car face-font) nil
+                         :font (cdr face-font)
+                         :height pzel-font-height))
+   `((default . ,pzel-font-face)
+     (fixed-pitch . ,pzel-font-face)
+     (variable-pitch . ,pzel-variable-font-face))))
 
 (defun pzel-font-size-bigger ()
   (interactive)
   (setq pzel-font-height (+ pzel-font-height 10))
-  (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
-  (set-face-attribute 'fixed-pitch nil :font pzel-font-face :height pzel-font-height))
+  (pzel--font-resize))
 
 (defun pzel-font-size-smaller ()
   (interactive)
   (setq pzel-font-height (- pzel-font-height 10))
-  (set-face-attribute 'default nil :font pzel-font-face :height pzel-font-height)
-  (set-face-attribute 'fixed-pitch nil :font pzel-font-face :height pzel-font-height))
+  (pzel--font-resize))
 
 (defun insert-current-datetime ()
   (interactive)
@@ -466,8 +412,8 @@
             ("<f5>" . refresh-buffer)
             ("<f6>" . electric-buffer-list)
             ("<f7>" . ispell-buffer)
-            ("C-+" . global-font-size-bigger)
-            ("C--" . global-font-size-smaller)
+            ("C-+" . pzel-font-size-bigger)
+            ("C--" . pzel-font-size-smaller)
             ("C-c C-c" . comment-or-uncomment-region)
             ("C-c C-k" . clear-buffer-permenantly)
             ("C-c w" . delete-trailing-whitespace)
@@ -498,9 +444,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-source-save-behavior nil)
  '(package-selected-packages
-   (quote
-    (magit spark yaml-mode xclip which-key web-mode w3m visual-fill-column use-package tuareg roguel-ike rainbow-delimiters projectile ponylang-mode nginx-mode markdown-mode lua-mode inverse-acme-theme haskell-mode haskell-emacs green-screen-theme green-phosphor-theme green-is-the-new-black-theme grayscale-theme graphviz-dot-mode go-mode flycheck evil erlang elm-mode elixir-mode dumb-jump constant-theme commentary-theme column-enforce-mode abyss-theme))))
+   '(elfeed elpher magit spark yaml-mode xclip which-key web-mode w3m visual-fill-column use-package tuareg roguel-ike rainbow-delimiters projectile ponylang-mode nginx-mode markdown-mode lua-mode inverse-acme-theme haskell-mode haskell-emacs green-screen-theme green-phosphor-theme green-is-the-new-black-theme grayscale-theme graphviz-dot-mode go-mode flycheck evil erlang elm-mode elixir-mode dumb-jump constant-theme commentary-theme column-enforce-mode abyss-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
