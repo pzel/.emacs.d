@@ -6,9 +6,9 @@
 
 ;; Packages
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")
-                         ))
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("elpa" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 
 ;; Bootstrap `use-package`
@@ -17,15 +17,28 @@
   (package-install 'use-package))
 (require 'use-package)
 
+(use-package weblio :ensure t
+  :init
+  (global-set-key (kbd "M-g w") #'weblio-lookup-region))
+
 (use-package magit :ensure t
   :init
-  (global-set-key (kbd "C-x g") 'magit-status))
+  (global-set-key (kbd "C-x g") #'magit-status))
 
 (use-package dumb-jump :ensure t
   :init
   (dumb-jump-mode t))
 
+(use-package native-complete :ensure t
+  :init
+  (setq native-complete-style-regex-alist '(("" . tab)))
+  (with-eval-after-load 'shell (native-complete-setup-bash)))
+
 (use-package commentary-theme :ensure t)
+
+(use-package go-mode :ensure t
+  :init
+  (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package yaml-mode :ensure t
   :init
@@ -40,9 +53,15 @@
   (setq-default web-mode-css-indent-offset 2)
   (setq-default web-mode-code-indent-offset 2))
 
+(use-package plisp-mode :ensure t
+  :init
+  (setq-default plisp-documentation-directory
+                (expand-file-name "~/src/pil21/doc")))
+
 (use-package projectile :ensure t
   :init
   (setq projectile-tags-file-name "tags")
+  (setq projectile-completion-system 'ivy)
   :config
   (projectile-global-mode))
 
@@ -74,13 +93,8 @@
   (setq erlang-electric-commands '())
   (add-hook 'erlang-mode-hook '(lambda()
                                  (setq indent-tabs-mode nil)
-                                 (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
                                  (column-enforce-mode 1)
                                  (display-line-numbers-mode 1))))
-
-(use-package elm-mode :ensure t
-  :init
-  (add-hook 'elm-mode-hook '(lambda() (display-line-numbers-mode 1))))
 
 (use-package elixir-mode :ensure t
   :init
@@ -88,12 +102,21 @@
             '(lambda() (if (eq major-mode 'elixir-mode) (whitespace-cleanup))))
   (add-hook 'elixir-mode-hook
             '(lambda()
-               (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
                (column-enforce-mode 1)
                (display-line-numbers-mode nil))))
 
+(use-package emms :ensure t
+  :init
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players))
+
 ;; My custom globals
-(defvar pzel-font-height 120) ;; use 140 on low-res screen
+(defvar pzel-font-height 90) ;; use 140 on low-res screen
+(defvar pzel-font-face "Fira Mono")
+;(defvar pzel-font-face "Go Mono")
+(defvar pzel-variable-font-face "Fira Sans Light")
+
 (defvar original-mode-line-format mode-line-format)
 
 ;; erc: hide noise in channel
@@ -103,7 +126,6 @@
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
 (setq initial-scratch-message "")
-(if (fboundp 'menu-bar-mode) (menu-bar-mode 0))
 (fset 'yes-or-no-p 'y-or-n-p)
 (windmove-default-keybindings)
 (setq large-file-warning-threshold (* 24 10000000))
@@ -120,48 +142,12 @@
 (setq-default Buffer-menu-size-width 10)
 (setq-default display-buffer-alist
               '(("*shell-?*" (display-buffer-reuse-window
-                              display-buffer-same-window))))
+                              display-buffer-same-window))
+                ("*Man" (display-buffer-reuse-window
+                         display-buffer-same-window))
+))
 (setq-default uniquify-buffer-name-style 'forward)
 
-(cond
- ((eq window-system 'nil)  ;; TERMINAL
-  (progn
-    (require 'mouse)
-    (global-font-lock-mode 0)
-    (xterm-mouse-mode t)
-    (xclip-mode t)
-    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defvar global-shell-location "/bin/bash")))
-  ((eq (symbol-value 'window-system) 'x)    ;; XORG
-   (progn
-     (defvar pzel-font-face "Fira Mono")
-     (defvar pzel-variable-font-face "Fira Sans Light")
-     (defvar global-shell-location "/bin/bash")
-     (setq-default scroll-bar-mode-explicit t)
-     (scroll-bar-mode -1)
-     (tool-bar-mode -1)
-     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-     (setq mouse-wheel-progressive-speed nil)
-     (setq-default mouse-autoselect-window t)
-     (set-face-background 'trailing-whitespace "IndianRed1")
-     (set-face-background 'default "floral white")
-     (set-face-attribute 'fixed-pitch nil
-                         :font pzel-font-face
-                         :height pzel-font-height)
-     (set-face-attribute 'default nil
-                         :font pzel-font-face
-                         :height pzel-font-height)
-     (set-face-attribute 'variable-pitch nil
-                         :font pzel-variable-font-face
-                         :height pzel-font-height)
-     (set-frame-size (selected-frame) 100 25)
-     (fringe-mode '(1 . 1))
-     (load-theme 'commentary t)
-     (setq-default os-open-command "xdg-open"))))
-
-;; INDENTS
-(setq-default elm-indent-offset 2)
 
 ;; Elfeed
 (defun pzel-refresh-elfeed-feeds ()
@@ -171,12 +157,48 @@
           (insert-file-contents "~/.newsboat/urls")
           (split-string (buffer-string) "\n" t))))
 (pzel-refresh-elfeed-feeds)
+(setq-default elfeed-search-filter "@2-weeks-ago")
+
+
+;; temp workaround while waiting for https://github.com/skeeto/elfeed/pull/422/files
+(defun elfeed-search-print-entry--pzel (entry)
+  (let* ((date (elfeed-search-format-date (elfeed-entry-date entry)))
+         (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+         (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+         (feed (elfeed-entry-feed entry))
+         (feed-title
+          (when feed
+            (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+         (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+         (tags-str (mapconcat
+                    (lambda (s) (propertize s 'face 'elfeed-search-tag-face))
+                    tags ","))
+         (title-width (- (window-width) 10 elfeed-search-trailing-width))
+         (title-column (elfeed-format-column
+                        title (elfeed-clamp
+                               elfeed-search-title-min-width
+                               title-width
+                               elfeed-search-title-max-width)
+                        :left)))
+    (insert (propertize date 'face 'elfeed-search-date-face))
+    (insert " " (propertize title-column 'face title-faces 'kbd-help title))
+    (when feed-title
+      (insert " " (propertize feed-title 'face 'elfeed-search-feed-face)))
+    (when tags (insert " (" tags-str ")"))))
+
+(setq elfeed-search-print-entry-function #'elfeed-search-print-entry--pzel)
 
 ;; EWW as default browser
 (setq shr-inhibit-images t)
 (setq browse-url-browser-function 'eww-browse-url)
 (add-hook 'eww-mode-hook
           #'disable-trailing-whitespace)
+(setq eww-history-limit nil)
+(setq shr-width 70)
+;     (set-face-attribute 'eww-form-text nil
+;                    :foreground "#000000"
+;                    :background "#ffffdf"
+;                    :box '(:line-width 2))
 
 ;; Electric buffer list
 (add-hook 'electric-buffer-menu-mode-hook
@@ -226,7 +248,7 @@
 (setq epa-file-select-keys nil)
 
 ;; ORG MODE
-(defun org-home () (interactive) (find-file-at-point "~/notes.org/index.org.gpg"))
+(defun org-home () (interactive) (find-file-at-point "~/notes.org/2021-05.org"))
 (setq org-export-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 (setq coding-system-for-read 'utf-8)
@@ -247,7 +269,9 @@
 (load-file (expand-file-name "~/.emacs.d/lisp/org-present-hooks.el"))
 
 ;; IDO
-(setq ido-enable-flex-matching t)
+;(setq ido-enable-flex-matching t)
+;(setq ido-enable-regex t)
+;(ido-mode 1)
 
 ;; ISPELL
 (setq ispell-program-name "/usr/bin/hunspell")
@@ -266,7 +290,9 @@
     ("Rakefile$" . ruby-mode)
     ("\\.html?\\'" . web-mode)
     ("\\.html.eex\\'" . web-mode)
-    ("\\.css?\\'" . web-mode)))
+    ("\\.css?\\'" . web-mode)
+    ("\\.l\\'" . plisp-mode)))
+
 
 ;; TEXT FORMATTING ;;
 (setq-default bidi-display-reordering nil)
@@ -307,24 +333,19 @@
 
 ;; M-x shell tweaks
 (setq-default sh-basic-offset 2)
-(setq explicit-shell-file-name global-shell-location)
+(setq shell-completion-execonly nil)
 (setq-default comint-scroll-show-maximum-output 1)
 (setq-default comint-input-ignoredups t)
 (setq-default comint-eol-on-send nil)
 (setq-default comint-use-prompt-regexp t)
-(setq-default comint-prompt-regexp "")
+(setq-default comint-prompt-regexp " +")
+(setq comint-file-name-chars "[]~/A-Za-z0-9+@:_.$#%,{}-")
+
 (add-hook 'comint-mode-hook
     (lambda ()
       (define-key shell-mode-map (kbd "RET")
         'shell-eol-and-insert)
       (global-unset-key (kbd "C-x C-x"))))
-
-;; move cursor to the end when switching to shell
-(add-hook 'buffer-list-update-hook
-          (lambda()
-            (if (string-match "*shell-" (buffer-name (current-buffer)))
-                (goto-char (point-max))
-              t)))
 
 (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
 (setenv "NODE_NO_READLINE" "1")
@@ -376,7 +397,10 @@
                          :height pzel-font-height))
    `((default . ,pzel-font-face)
      (fixed-pitch . ,pzel-font-face)
-     (variable-pitch . ,pzel-variable-font-face))))
+     (variable-pitch . ,pzel-variable-font-face)
+     (fixed-pitch-serif . ,pzel-font-face)
+     ))
+  (message "%d" pzel-font-height))
 
 (defun pzel-font-size-bigger ()
   (interactive)
@@ -395,42 +419,74 @@
 ;; Keybindings
 ;; UNMAP UNWANTED KEYBINDINGS
 (progn
-  (mapcar (lambda(key) (global-unset-key (kbd key)))
-          '("<f1>" "<f2>" "<f3>"
-            "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
-            "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
-            "C-x m" "C-z"
-            "M-`" "<C-down-mouse-1>"
-            ))
+  (mapcar
+   (lambda(key) (global-unset-key (kbd key)))
+   '("<f1>" "<f2>" "<f3>"
+     "C-o" "C-r" "C-r" "C-s" "C-t" "C-j"
+     "C-x C-b" "C-x C-n" "C-x C-p" "C-x C-r" "C-x C-z"
+     "C-x m" "C-z"
+     "M-`" "<C-down-mouse-1>"
+     ))
   ;; Set custom keybindings
-  (mapcar (lambda(key-bind) (global-set-key (kbd (car key-bind))
-                                            (cdr key-bind)))
-          `(
-            ("<f1>" . other-window)
-            ("<f2>" . save-buffer)
-            ("<f3>" . projectile-find-file)
-            ("<f5>" . refresh-buffer)
-            ("<f6>" . electric-buffer-list)
-            ("<f7>" . ispell-buffer)
-            ("C-+" . pzel-font-size-bigger)
-            ("C--" . pzel-font-size-smaller)
-            ("C-c C-c" . comment-or-uncomment-region)
-            ("C-c C-k" . clear-buffer-permenantly)
-            ("C-c w" . delete-trailing-whitespace)
-            ("C-c v" . visual-line-mode)
-            ("C-j" . newline)
-            ("C-o C-o" . other-window)
-            ("C-r" . isearch-backward-regexp)
-            ("C-s" . isearch-forward-regexp)
-            ("C-x C-b" . electric-buffer-list)
-            ("C-x C-m" . compile)
-            ("C-x C-r" . ffap-other-window)
-            ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
-            ("M-`" . other-window)
-            ("M-1" . shell1) ("M-2" . shell2) ("M-3" . shell3)
-            ("M-RET" . shell1)
-            ("M-g" . goto-line)
-            ("M-o d" . insert-current-datetime))))
+  (mapcar
+   (lambda(key-bind) (global-set-key (kbd (car key-bind))
+                                     (cdr key-bind)))
+   `(
+     ("<f1>" . other-window)
+     ("<f2>" . save-buffer)
+     ("<f3>" . projectile-find-file)
+     ("<f5>" . refresh-buffer)
+     ("<f6>" . ivy-switch-buffer)
+     ("<f7>" . ispell-buffer)
+     ("<f12>" . execute-extended-command)
+     ("C-+" . pzel-font-size-bigger)
+     ("C--" . pzel-font-size-smaller)
+     ("C-c C-c" . comment-or-uncomment-region)
+     ("C-c C-k" . clear-buffer-permenantly)
+     ("C-c n" . display-line-numbers-mode)
+     ("C-c w" . delete-trailing-whitespace)
+     ("C-c v" . visual-line-mode)
+     ("C-j" . newline)
+     ("C-o C-o" . other-window)
+     ("C-r" . isearch-backward-regexp)
+     ("C-s" . isearch-forward-regexp)
+     ("C-x C-b" . electric-buffer-list)
+     ("C-x C-m" . compile)
+     ("C-x C-r" . ffap-other-window)
+     ("C-x C-f" . find-file)
+     ("C-x E" . ,(kbd "C-u 1 C-x C-e"))
+     ("M-`" . other-window)
+     ("M-1" . shell1)
+     ("M-2" . shell2)
+     ("M-3" . shell3)
+     ("M-o d" . insert-current-datetime))))
+
+(cond
+ ((eq window-system 'nil)  ;; TERMINAL
+  (progn
+    (require 'mouse)
+    (global-font-lock-mode 0)
+    (xterm-mouse-mode t)
+    (xclip-mode t)
+    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+    (defvar global-shell-location "/bin/bash")))
+  ((eq (symbol-value 'window-system) 'x)    ;; XORG
+   (progn
+     (defvar global-shell-location "/bin/bash")
+     (setq-default scroll-bar-mode-explicit t)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+     (setq mouse-wheel-progressive-speed nil)
+     (setq-default mouse-autoselect-window t)
+     (set-face-background 'trailing-whitespace "IndianRed1")
+     ;(set-face-background 'default "floral white")
+     (pzel--font-resize) ;; also sets the font
+     (set-frame-size (selected-frame) 100 25)
+     (fringe-mode '(1 . 1))
+     (load-theme 'commentary t)
+     (setq-default os-open-command "xdg-open"))))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -446,7 +502,7 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(package-selected-packages
-   '(elfeed elpher magit spark yaml-mode xclip which-key web-mode w3m visual-fill-column use-package tuareg roguel-ike rainbow-delimiters projectile ponylang-mode nginx-mode markdown-mode lua-mode inverse-acme-theme haskell-mode haskell-emacs green-screen-theme green-phosphor-theme green-is-the-new-black-theme grayscale-theme graphviz-dot-mode go-mode flycheck evil erlang elm-mode elixir-mode dumb-jump constant-theme commentary-theme column-enforce-mode abyss-theme)))
+   '(markdown-preview-mode markdown-preview-eww weblio flycheck-package package-lint tldr plisp-mode janet-mode ada-mode native-complete kotlin-mode counsel consult ivy-emms emms-player-simple-mpv dictcc request elfeed elpher magit yaml-mode xclip which-key web-mode w3m visual-fill-column use-package rainbow-delimiters projectile nginx-mode lua-mode inverse-acme-theme grayscale-theme graphviz-dot-mode go-mode erlang elixir-mode dumb-jump commentary-theme column-enforce-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
