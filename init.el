@@ -29,16 +29,7 @@
   :init
   (dumb-jump-mode t))
 
-(use-package native-complete :ensure t
-  :init
-  (setq native-complete-style-regex-alist '(("" . tab)))
-  (with-eval-after-load 'shell (native-complete-setup-bash)))
-
 (use-package commentary-theme :ensure t)
-
-(use-package go-mode :ensure t
-  :init
-  (add-hook 'before-save-hook #'gofmt-before-save))
 
 (use-package yaml-mode :ensure t
   :init
@@ -58,7 +49,8 @@
   (setq-default plisp-documentation-directory
                 (expand-file-name "~/src/pil21/doc")))
 
-(use-package projectile :ensure t
+(use-package projectile
+  :ensure t
   :init
   (setq projectile-tags-file-name "tags")
   (setq projectile-completion-system 'ivy)
@@ -67,20 +59,25 @@
 
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
-(use-package graphviz-dot-mode :ensure t
+(use-package graphviz-dot-mode
+  :ensure t
+  :defer t
   :init
   (add-hook 'graphviz-dot-mode-hook
             (lambda ()
               (local-unset-key (kbd "RET")
               (local-unset-key (kbd ";"))))))
 
-(use-package rainbow-delimiters :ensure t)
+(use-package rainbow-delimiters
+  :ensure t)
 
-(use-package column-enforce-mode :ensure t
+(use-package column-enforce-mode
+  :ensure t
   :init
   (setq column-enforce-column 80))
 
-(use-package which-key :ensure t
+(use-package which-key
+  :ensure t
   :init
   (setq which-key-separator " ")
   (setq which-key-prefix-prefix "+")
@@ -88,6 +85,7 @@
   (which-key-mode 1))
 
 (use-package erlang :ensure t
+  :defer t
   :init
   (setq erlang-indent-level 2)
   (setq erlang-electric-commands '())
@@ -96,7 +94,9 @@
                                  (column-enforce-mode 1)
                                  (display-line-numbers-mode 1))))
 
-(use-package elixir-mode :ensure t
+(use-package elixir-mode
+  :ensure t
+  :defer t
   :init
   (add-hook 'before-save-hook
             '(lambda() (if (eq major-mode 'elixir-mode) (whitespace-cleanup))))
@@ -104,12 +104,6 @@
             '(lambda()
                (column-enforce-mode 1)
                (display-line-numbers-mode nil))))
-
-(use-package emms :ensure t
-  :init
-  (require 'emms-setup)
-  (emms-all)
-  (emms-default-players))
 
 ;; My custom globals
 (defvar pzel-font-height 90) ;; use 140 on low-res screen
@@ -126,9 +120,9 @@
 (ffap-bindings)
 (setq-default inhibit-startup-message t)
 (setq initial-scratch-message "")
+(setq large-file-warning-threshold (* 24 10000000))
 (fset 'yes-or-no-p 'y-or-n-p)
 (windmove-default-keybindings)
-(setq large-file-warning-threshold (* 24 10000000))
 (set-face-underline-p 'underline nil)
 (column-number-mode t)
 (size-indication-mode t)
@@ -136,18 +130,16 @@
 (menu-bar-mode -1)
 (delete-selection-mode 1)
 (set-language-environment "UTF-8")
-(setq-default fill-column 79)
-(setq-default Buffer-menu-name-width 35)
-(setq-default Buffer-menu-mode-width 10)
-(setq-default Buffer-menu-size-width 10)
+(setq-default fill-column 79
+              Buffer-menu-name-width 35
+              Buffer-menu-mode-width 10
+              Buffer-menu-size-width 10
+              uniquify-buffer-name-style 'forward)
 (setq-default display-buffer-alist
               '(("*shell-?*" (display-buffer-reuse-window
                               display-buffer-same-window))
                 ("*Man" (display-buffer-reuse-window
-                         display-buffer-same-window))
-))
-(setq-default uniquify-buffer-name-style 'forward)
-
+                         display-buffer-same-window))))
 
 ;; Elfeed
 (defun pzel-refresh-elfeed-feeds ()
@@ -189,12 +181,12 @@
 (setq elfeed-search-print-entry-function #'elfeed-search-print-entry--pzel)
 
 ;; EWW as default browser
-(setq shr-inhibit-images t)
-(setq browse-url-browser-function 'eww-browse-url)
+(setq shr-inhibit-images t
+      browse-url-browser-function 'eww-browse-url
+      eww-history-limit nil
+      shr-width 70)
 (add-hook 'eww-mode-hook
           #'disable-trailing-whitespace)
-(setq eww-history-limit nil)
-(setq shr-width 70)
 ;     (set-face-attribute 'eww-form-text nil
 ;                    :foreground "#000000"
 ;                    :background "#ffffdf"
@@ -210,12 +202,6 @@
   (let ((tramp-file-name (concat "/sudo::" (expand-file-name file-name))))
     (find-file tramp-file-name)))
 
-
-(add-hook 'java-mode-hook
-          '(lambda()
-             (local-set-key (kbd "C-c n") 'display-line-numbers-mode)
-             (display-line-numbers-mode 1)))
-
 ;; Disable C-c C-c in python mode
 (add-hook 'python-mode-hook
           '(lambda () (local-unset-key (kbd "C-c C-c"))))
@@ -226,7 +212,7 @@
 
 ;; Disable dangling space hilight in term mode
 (defun disable-trailing-whitespace()
-    (setq show-trailing-whitespace nil))
+  (setq show-trailing-whitespace nil))
 
 (add-hook 'term-mode-hook #'disable-trailing-whitespace)
 (add-hook 'ansi-term-mode-hook #'disable-trailing-whitespace)
@@ -242,26 +228,27 @@
 (setq epa-pinentry-mode 'loopback)
 (load "armor-mode")
 (epa-file-enable)
-(setq epg-gpg-program "/usr/bin/gpg2")
-(setq epa-file-name-regexp "\\.\\(gpg\\|\\asc\\)\\(~\\|\\.~[0-9]+~\\)?\\'")
+(setq epg-gpg-program "/usr/bin/gpg2"
+      epa-file-name-regexp "\\.\\(gpg\\|\\asc\\)\\(~\\|\\.~[0-9]+~\\)?\\'"
+      epa-file-select-keys nil)
 (epa-file-name-regexp-update)
-(setq epa-file-select-keys nil)
 
 ;; ORG MODE
-(defun org-home () (interactive) (find-file-at-point "~/notes.org/2021-05.org"))
-(setq org-export-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(setq coding-system-for-read 'utf-8)
-(setq coding-system-for-write 'utf-8)
+(defun org-home ()
+  (interactive)
+  (let* ((this-month (format-time-string "%m"))
+         (filename (format "~/notes.org/2021-%s.org" this-month)))
+    (find-file-at-point filename)))
+
+(setq org-export-coding-system 'utf-8
+      default-process-coding-system '(utf-8-unix . utf-8-unix)
+      org-startup-truncated nil
+      coding-system-for-read 'utf-8
+      coding-system-for-write 'utf-8)
 (set-charset-priority 'unicode)
-(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-(setq org-startup-truncated nil)
+(prefer-coding-system 'utf-8)
+
 (global-unset-key (kbd "M-o"))
-(global-set-key (kbd "M-o l") 'org-store-link)
-(global-set-key (kbd "M-o a") 'org-agenda)
-(global-set-key (kbd "M-o c") 'org-capture)
-(global-set-key (kbd "M-o b") 'org-iswitchb)
-(global-set-key (kbd "M-o p") 'org-present)
 (global-set-key (kbd "<f8>") 'org-home)
 
 ;; ORG-PRESENT
@@ -274,9 +261,9 @@
 ;(ido-mode 1)
 
 ;; ISPELL
-(setq ispell-program-name "/usr/bin/hunspell")
-(setq ispell-dictionary "en_US")
-(setq ispell-hunspell-dict-paths-alist
+(setq ispell-program-name "/usr/bin/hunspell"
+      ispell-dictionary "en_US"
+      ispell-hunspell-dict-paths-alist
       '(("polish" "/usr/share/hunspell/pl_PL.aff")
         ("pl_PL" "/usr/share/hunspell/pl_PL.aff")
         ("en_US" "/usr/share/hunspell/en_US.aff")))
@@ -295,19 +282,20 @@
 
 
 ;; TEXT FORMATTING ;;
-(setq-default bidi-display-reordering nil)
 (electric-indent-mode nil)
-(setq-default electric-indent-mode nil)
-(setq-default show-trailing-whitespace t)
 (show-paren-mode 1)
-(setq-default show-paren-delay 0)
-(setq-default tab-width 2)
+(rainbow-delimiters-mode 1)
 (setq indent-line-function 'insert-tab)
-(setq-default indent-tabs-mode nil)
-(setq-default default-tab-width 2)
-(setq-default css-indent-offset 2)
-(setq-default c-basic-offset 2)
-(setq-default js-indent-level 2)
+(setq-default bidi-display-reordering nil
+              electric-indent-mode nil
+              show-trailing-whitespace t
+              show-paren-delay 0
+              tab-width 2
+              indent-tabs-mode nil
+              default-tab-width 2
+              css-indent-offset 2
+              c-basic-offset 2
+              js-indent-level 2)
 
 ;; Use acutal tabs in Makefiles
 (add-hook 'makefile-mode-hook
@@ -316,10 +304,10 @@
       (setq tab-width 8)))
 
 ;; No emacs poo files
-(setq-default create-lockfiles nil)
-(setq-default make-backup-files nil)
-(setq-default backup-inhibited t)
-(setq-default auto-save-default nil)
+(setq-default create-lockfiles nil
+              make-backup-files nil
+              backup-inhibited t
+              auto-save-default nil)
 
 ;; Debug on error
 ; (setq debug-on-error nil)
@@ -332,14 +320,14 @@
    (mapcar (lambda(m) (and (boundp m) (symbol-value m) m)) minor-mode-list)))
 
 ;; M-x shell tweaks
-(setq-default sh-basic-offset 2)
 (setq shell-completion-execonly nil)
-(setq-default comint-scroll-show-maximum-output 1)
-(setq-default comint-input-ignoredups t)
-(setq-default comint-eol-on-send nil)
-(setq-default comint-use-prompt-regexp t)
-(setq-default comint-prompt-regexp " +")
 (setq comint-file-name-chars "[]~/A-Za-z0-9+@:_.$#%,{}-")
+(setq-default sh-basic-offset 2
+              comint-scroll-show-maximum-output 1
+              comint-input-ignoredups t
+              comint-eol-on-send nil
+              comint-use-prompt-regexp t
+              comint-prompt-regexp " +")
 
 (add-hook 'comint-mode-hook
     (lambda ()
@@ -378,6 +366,40 @@
   "clear whole buffer, contents are not added to the kill ring"
   (interactive)
   (delete-region (point-min) (point-max)))
+
+(defun keyboard-quit-context+ ()
+  "Quit current context.
+
+This function is a combination of `keyboard-quit' and
+`keyboard-escape-quit' with some parts omitted and some custom
+behavior added."
+  (interactive)
+  (cond ((region-active-p)
+         ;; Avoid adding the region to the window selection.
+         (setq saved-region-selection nil)
+         (let (select-active-regions)
+           (deactivate-mark)))
+        ((eq last-command 'mode-exited) nil)
+        (current-prefix-arg
+         nil)
+        (defining-kbd-macro
+          (message
+           (substitute-command-keys
+            "Quit is ignored during macro defintion, use \\[kmacro-end-macro] if you want to stop macro definition"))
+          (cancel-kbd-macro-events))
+        ((active-minibuffer-window)
+         (when (get-buffer-window "*Completions*")
+           ;; hide completions first so point stays in active window when
+           ;; outside the minibuffer
+           (minibuffer-hide-completions))
+         (abort-recursive-edit))
+        (t
+         ;; if we got this far just use the default so we don't miss
+         ;; any upstream changes
+         (keyboard-quit))))
+
+(global-set-key [remap keyboard-quit] #'keyboard-quit-context+)
+
 
 (defun refresh-buffer ()
   "Reload file-local variables"
@@ -461,32 +483,45 @@
      ("M-3" . shell3)
      ("M-o d" . insert-current-datetime))))
 
-(cond
- ((eq window-system 'nil)  ;; TERMINAL
-  (progn
-    (require 'mouse)
-    (global-font-lock-mode 0)
-    (xterm-mouse-mode t)
-    (xclip-mode t)
-    (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-    (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
-    (defvar global-shell-location "/bin/bash")))
-  ((eq (symbol-value 'window-system) 'x)    ;; XORG
-   (progn
-     (defvar global-shell-location "/bin/bash")
-     (setq-default scroll-bar-mode-explicit t)
-     (scroll-bar-mode -1)
-     (tool-bar-mode -1)
-     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-     (setq mouse-wheel-progressive-speed nil)
-     (setq-default mouse-autoselect-window t)
-     (set-face-background 'trailing-whitespace "IndianRed1")
-     ;(set-face-background 'default "floral white")
-     (pzel--font-resize) ;; also sets the font
-     (set-frame-size (selected-frame) 100 25)
-     (fringe-mode '(1 . 1))
-     (load-theme 'commentary t)
-     (setq-default os-open-command "xdg-open"))))
+(add-hook 'after-make-frame-functions
+          #'pzel-configure-frame-ui)
+(add-hook 'after-init-hook
+          (lambda ()
+            (pzel-configure-frame-ui (car (frame-list)))))
+
+(defun pzel-configure-frame-ui (frame)
+  (interactive)
+  (select-frame frame)
+  (if window-system
+      (pzel--set-up-graphical-frame)
+    (pzel--set-up-terminal-frame)))
+
+(defun pzel--set-up-terminal-frame ()
+  (interactive)
+  (require 'mouse)
+  (global-font-lock-mode 0)
+  (xterm-mouse-mode t)
+  (xclip-mode t)
+  (global-set-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+  (defvar global-shell-location "/bin/bash"))
+
+(defun pzel--set-up-graphical-frame ()
+  (interactive)
+  (defvar global-shell-location "/bin/bash")
+  (setq-default scroll-bar-mode-explicit t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+  (setq mouse-wheel-progressive-speed nil)
+  (setq-default mouse-autoselect-window t)
+  (set-face-background 'trailing-whitespace "IndianRed1")
+  ;;(set-face-background 'default "floral white")
+  (pzel--font-resize) ;; also sets the font
+  (set-frame-size (selected-frame) 100 25)
+  (fringe-mode '(1 . 1))
+  (load-theme 'commentary t)
+  (setq-default os-open-command "xdg-open"))
 
 ;; vulnerability: http://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00211.html
 (eval-after-load "enriched"
@@ -501,6 +536,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
+ '(custom-safe-themes
+   '("39546362fed4d5201b2b386dc21f21439497c9eec5fee323d953b3e230e4083e" default))
  '(package-selected-packages
    '(markdown-preview-mode markdown-preview-eww weblio flycheck-package package-lint tldr plisp-mode janet-mode ada-mode native-complete kotlin-mode counsel consult ivy-emms emms-player-simple-mpv dictcc request elfeed elpher magit yaml-mode xclip which-key web-mode w3m visual-fill-column use-package rainbow-delimiters projectile nginx-mode lua-mode inverse-acme-theme grayscale-theme graphviz-dot-mode go-mode erlang elixir-mode dumb-jump commentary-theme column-enforce-mode)))
 (custom-set-faces
