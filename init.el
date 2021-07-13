@@ -105,12 +105,31 @@
                (column-enforce-mode 1)
                (display-line-numbers-mode nil))))
 
+(use-package xscheme
+  :ensure t
+  :init
+  (let* ((loaded (load-library "xscheme"))
+         (keymap scheme-mode-map)
+         (old-and-new-keys
+         `(("\e\C-x" ,(kbd "C-c C-d")  #'xscheme-send-definition)
+           ("\C-x\C-e" ,(kbd "C-c C-e") #'xscheme-send-previous-expression)
+           ("\eo" ,(kbd "C-c C-b") #'xscheme-send-buffer)
+           ("\e\C-z" ,(kbd "C-c C-r") #'xscheme-send-region)
+           ("\C-c\C-s" ,(kbd "C-c M-s") #'xscheme-select-process-buffer)
+           ("\C-c\C-b" ,(kbd "C-c M-b") #'xscheme-send-breakpoint-interrupt)
+           ("\C-c\C-c" ,(kbd "C-c M-c") #'xscheme-send-control-g-interrupt)
+           ("\C-c\C-u" ,(kbd "C-c M-u") #'xscheme-send-control-u-interrupt)
+           ("\C-c\C-x" ,(kbd "C-c M-x") #'xscheme-send-control-x-interrupt))))
+    (mapcar (lambda(epair) (define-key keymap (car epair) nil)) old-and-new-keys)
+    (mapcar (lambda(epair) (define-key keymap (cadr epair) (caddr epair))) old-and-new-keys)))
+
+
 ;; My custom globals
-(defvar pzel-font-height 90) ;; use 140 on low-res screen
-(defvar pzel-font-face "Fira Mono")
+(defvar pzel-font-height 100) ;; use 140 on low-res screen
+;(defvar pzel-font-face "Fira Mono")
+(defvar pzel-font-face "Iosevka Fixed")
 ;(defvar pzel-font-face "Go Mono")
 (defvar pzel-variable-font-face "Fira Sans Light")
-
 (defvar original-mode-line-format mode-line-format)
 
 ;; erc: hide noise in channel
@@ -206,9 +225,7 @@
 (add-hook 'python-mode-hook
           '(lambda () (local-unset-key (kbd "C-c C-c"))))
 
-;; Visual-wrap lines in text mode (and org mode)
-;; with visual-fill-column, this is wrapped to `fill-column`
-(add-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'visual-fill-column-mode)
 
 ;; Disable dangling space hilight in term mode
 (defun disable-trailing-whitespace()
@@ -247,6 +264,7 @@
       coding-system-for-write 'utf-8)
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8)
+(require 'org-tempo)
 
 (global-unset-key (kbd "M-o"))
 (global-set-key (kbd "<f8>") 'org-home)
@@ -310,7 +328,7 @@
               auto-save-default nil)
 
 ;; Debug on error
-; (setq debug-on-error nil)
+(setq debug-on-error nil)
 
 ;; Reloading minor modes
 (defun active-minor-modes ()
@@ -354,10 +372,16 @@
 (server-start-here)
 
 (defun shell-run (name)
+  "
+Switch to shell named NAME, or if that is the active buffer,
+switch to the previous buffer"
   (interactive)
-  (shell name)
-  (font-lock-mode 0)
-  (setq show-trailing-whitespace nil))
+  (if (equal (buffer-name) name)
+      (switch-to-buffer (other-buffer (current-buffer)))
+    (progn
+      (shell name)
+      (font-lock-mode 0)
+      (setq show-trailing-whitespace nil))))
 
 (defun shell1 () (interactive) (shell-run "*shell-1*"))
 (defun shell2 () (interactive) (shell-run "*shell-2*"))
@@ -537,9 +561,9 @@ behavior added."
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(custom-safe-themes
-   '("39546362fed4d5201b2b386dc21f21439497c9eec5fee323d953b3e230e4083e" default))
+   '("8dcdc47af0290303002023237a77b5b412692d1b8658da819ab18caccfb811b5" "2b502f6e3bf0cba42fe7bf83a000f2d358a7020a7780a8682fcfed0c9dbffb5f" "076ee9f2c64746aac7994b697eb7dbde23ac22988d41ef31b714fc6478fee224" "ca2e59377dc1ecee2a1069ec7126b453fa1198fed946304abb9a5b8c7ad5404d" "39546362fed4d5201b2b386dc21f21439497c9eec5fee323d953b3e230e4083e" default))
  '(package-selected-packages
-   '(markdown-preview-mode markdown-preview-eww weblio flycheck-package package-lint tldr plisp-mode janet-mode ada-mode native-complete kotlin-mode counsel consult ivy-emms emms-player-simple-mpv dictcc request elfeed elpher magit yaml-mode xclip which-key web-mode w3m visual-fill-column use-package rainbow-delimiters projectile nginx-mode lua-mode inverse-acme-theme grayscale-theme graphviz-dot-mode go-mode erlang elixir-mode dumb-jump commentary-theme column-enforce-mode)))
+   '(modus-themes minsk-theme sbbs markdown-preview-mode markdown-preview-eww weblio flycheck-package package-lint tldr plisp-mode janet-mode ada-mode native-complete kotlin-mode counsel consult ivy-emms emms-player-simple-mpv dictcc request elfeed elpher magit yaml-mode xclip which-key web-mode w3m visual-fill-column use-package rainbow-delimiters projectile nginx-mode lua-mode inverse-acme-theme grayscale-theme graphviz-dot-mode go-mode erlang elixir-mode dumb-jump commentary-theme column-enforce-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
