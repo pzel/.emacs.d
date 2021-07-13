@@ -23,7 +23,9 @@
 
 (use-package magit :ensure t
   :init
-  (global-set-key (kbd "C-x g") #'magit-status))
+  (global-set-key (kbd "C-x g") #'magit-status)
+  (mapcar (lambda(k) (define-key magit-mode-map k nil)) 
+          (list (kbd "M-1") (kbd "M-2") (kbd "M-3"))))
 
 (use-package dumb-jump :ensure t
   :init
